@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    command: npm run start:dev
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=${MYSQL_DEFAULT_HOST:-db}
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=${MYSQL_DEFAULT_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=${MYSQL_DEFAULT_DATABASE:-siriodb}
+
+  db:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DEFAULT_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DEFAULT_DATABASE:-siriodb}
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db: local
