@@ -1,24 +1,24 @@
 -- Create Tables
-CREATE TABLE Country (
+CREATE TABLE Countries (
     country_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     country_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE State (
+CREATE TABLE States (
     state_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     state_name VARCHAR(255) NOT NULL,
     country_id BIGINT NOT NULL,
-    FOREIGN KEY (country_id) REFERENCES Country(country_id)
+    FOREIGN KEY (country_id) REFERENCES Countries(country_id)
 );
 
-CREATE TABLE Citys (
+CREATE TABLE Cities (
     city_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     city_name VARCHAR(255) NOT NULL,
     state_id BIGINT NOT NULL,
-    FOREIGN KEY (state_id) REFERENCES State(state_id)
+    FOREIGN KEY (state_id) REFERENCES States(state_id)
 );
 
-CREATE TABLE Address (
+CREATE TABLE Addresses (
     address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     street TEXT NOT NULL,
     house_number VARCHAR(255) NOT NULL,
@@ -26,11 +26,11 @@ CREATE TABLE Address (
     neighborhood TEXT,
     city_id BIGINT NOT NULL,
     zip_code VARCHAR(255) NOT NULL,
-    FOREIGN KEY (city_id) REFERENCES Citys(city_id)
+    FOREIGN KEY (city_id) REFERENCES Cities(city_id)
 );
 
-CREATE TABLE LoginUsers (
-    login_user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE UserLogins (
+    login_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     status BOOL NOT NULL,
@@ -41,43 +41,43 @@ CREATE TABLE LoginUsers (
 CREATE TABLE Users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     cpf VARCHAR(11) UNIQUE NOT NULL,
-    nome VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
     address_id BIGINT UNIQUE,
-    active BOOL NOT NULL,
-    FOREIGN KEY (address_id) REFERENCES Address(address_id)
+    is_active BOOL NOT NULL,
+    FOREIGN KEY (address_id) REFERENCES Addresses(address_id)
 );
 
-CREATE TABLE ActionType (
+CREATE TABLE ActionTypes (
     action_type_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     action_type VARCHAR(50) NOT NULL CHECK (action_type IN ('create', 'update', 'delete'))
 );
 
-CREATE TABLE UserAudit (
+CREATE TABLE UserAuditLogs (
     audit_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     action_type_id BIGINT NOT NULL,
-    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    login_user_id BIGINT NOT NULL,
+    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    login_id BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (action_type_id) REFERENCES ActionType(action_type_id),
-    FOREIGN KEY (login_user_id) REFERENCES LoginUsers(login_user_id)
+    FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
+    FOREIGN KEY (login_id) REFERENCES UserLogins(login_id)
 );
 
 -- Insert Init Data
 
 -- Insert Country
-INSERT INTO Country (country_name) VALUES
+INSERT INTO Countries (country_name) VALUES
 ('Brazil');
 
 -- Insert State
-INSERT INTO State (state_name, country_id) VALUES
+INSERT INTO States (state_name, country_id) VALUES
 ('São Paulo', 1);
 
 -- Insert City
-INSERT INTO Citys (city_name, state_id) VALUES
+INSERT INTO Cities (city_name, state_id) VALUES
 ('São Paulo', 1);
 
 -- Insert Address
-INSERT INTO Address (street, house_number, complement, neighborhood, city_id, zip_code) VALUES
+INSERT INTO Addresses (street, house_number, complement, neighborhood, city_id, zip_code) VALUES
 ('Rua Dona Adma Jafet', '91', '115', 'Bela Vista', 1, '01308050');

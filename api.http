@@ -1,8 +1,7 @@
 @baseUrl = http://localhost:3000
 @username = admin
 @password = securitypassword123
-@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6Im5ld3VzZXIiLCJpYXQiOjE3MjIzMzI2MTUsImV4cCI6MTcyMjMzNjIxNX0.mAGsgVDznAx-GtNvIa7RKNfni__BI_HFZA5Mr2qUL1s
-
+@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyMzQ1MjYzLCJleHAiOjE3MjIzNDg4NjN9.gR9yj6Tk0EbCDzr61NUBswpRLYHFuiCilOkUWTrEMb0
 ### Generate JWT Token
 POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
@@ -28,10 +27,10 @@ Content-Type: application/json
 
 {
   "cpf": "12345678901",
-  "nome": "Dwight Schrute",
+  "name": "Dwight Schrute",
   "birth_date": "1970-01-20",
   "address_id": 1,
-  "active": true
+  "is_active": true
 }
 
 ### Update Existing User (Protected)
@@ -41,10 +40,10 @@ Content-Type: application/json
 
 {
   "cpf": "12345678901",
-  "nome": "Dwight Schrute Updated",
+  "name": "Dwight Schrute Updated",
   "birth_date": "1970-01-20",
   "address_id": 2,
-  "active": true
+  "is_active": true
 }
 
 ### Delete User (Protected)

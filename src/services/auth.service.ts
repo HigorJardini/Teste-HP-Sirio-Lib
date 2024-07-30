@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { LoginUser } from "../entities/loginUser.entity";
+import { UserLogins } from "../entities/userLogins.entity";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -12,8 +12,8 @@ export class AuthService {
     this.dataSource = dataSource;
   }
 
-  async register(username: string, password: string): Promise<LoginUser> {
-    const loginUserRepo = this.dataSource.getRepository(LoginUser);
+  async register(username: string, password: string): Promise<UserLogins> {
+    const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
     // Check if the user already exists
     const existingUser = await loginUserRepo.findOneBy({ username });
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<string> {
-    const loginUserRepo = this.dataSource.getRepository(LoginUser);
+    const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
     const user = await loginUserRepo.findOneBy({ username });
     if (!user) {
@@ -49,7 +49,7 @@ export class AuthService {
     }
 
     // Create token JWT
-    const payload = { id: user.login_user_id, username: user.username };
+    const payload = { id: user.login_id, username: user.username };
     const token = jwt.sign(payload, this.secretKey, { expiresIn: "1h" });
     return token;
   }

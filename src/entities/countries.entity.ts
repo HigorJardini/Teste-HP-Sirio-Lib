@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("Country")
-export class Country {
+@Entity("Countries")
+export class Countries {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   country_id!: bigint;
 

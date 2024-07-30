@@ -1,12 +1,12 @@
 import { DataSourceOptions } from "typeorm";
-import { User } from "../entities/user.entity";
-import { Address } from "../entities/address.entity";
-import { City } from "../entities/city.entity";
-import { State } from "../entities/state.entity";
-import { Country } from "../entities/country.entity";
-import { LoginUser } from "../entities/loginUser.entity";
-import { ActionType } from "../entities/actionType.entity";
-import { UserAudit } from "../entities/userAudit.entity";
+import { Users } from "../entities/users.entity";
+import { Addresses } from "../entities/addresses.entity";
+import { Cities } from "../entities/cities.entity";
+import { States } from "../entities/states.entity";
+import { Countries } from "../entities/countries.entity";
+import { UserLogins } from "../entities/userLogins.entity";
+import { ActionTypes } from "../entities/actionTypes.entity";
+import { UserAuditLogs } from "../entities/userAuditLogs.entity";
 
 export const typeOrmConfig: DataSourceOptions = {
   type: "mysql",
@@ -16,14 +16,14 @@ export const typeOrmConfig: DataSourceOptions = {
   password: process.env.DB_PASSWORD || "password",
   database: process.env.DB_NAME || "siriodb",
   entities: [
-    User,
-    Address,
-    City,
-    State,
-    Country,
-    LoginUser,
-    ActionType,
-    UserAudit,
+    Users,
+    Addresses,
+    Cities,
+    States,
+    Countries,
+    UserLogins,
+    ActionTypes,
+    UserAuditLogs,
   ],
   synchronize: true, // Development and testing: true
 };

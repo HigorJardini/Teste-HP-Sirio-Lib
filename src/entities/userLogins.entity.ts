@@ -6,10 +6,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity("LoginUsers")
-export class LoginUser {
+@Entity("UserLogins")
+export class UserLogins {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  login_user_id!: bigint;
+  login_id!: bigint;
 
   @Column({ type: "varchar", length: 255 })
   username!: string;

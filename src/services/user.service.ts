@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
-import { User } from "../entities/user.entity";
-import { Address } from "../entities/address.entity";
-import { UserAudit } from "../entities/userAudit.entity";
-import { ActionType } from "../entities/actionType.entity";
+import { Users } from "../entities/users.entity";
+import { Addresses } from "../entities/addresses.entity";
+import { UserAuditLogs } from "../entities/userAuditLogs.entity";
+import { ActionTypes } from "../entities/actionTypes.entity";
 
 export class UserService {
   private dataSource: DataSource;
@@ -16,10 +16,10 @@ export class UserService {
   }
 
   async createUser(userData: any, loginUserId: number) {
-    const userRepo = this.dataSource.getRepository(User);
-    const addressRepo = this.dataSource.getRepository(Address);
-    const userAuditRepo = this.dataSource.getRepository(UserAudit);
-    const actionTypeRepo = this.dataSource.getRepository(ActionType);
+    const userRepo = this.dataSource.getRepository(Users);
+    const addressRepo = this.dataSource.getRepository(Addresses);
+    //const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
+    const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
 
     let address;
     if (userData.address) {
@@ -41,7 +41,7 @@ export class UserService {
     //   const userAudit = userAuditRepo.create({
     //     user_id: savedUser[0],
     //     action_type_id: actionType.action_type_id,
-    //     login_user_id: loginUserId,
+    //     login_id: loginUserId,
     //   });
     //   await userAuditRepo.save(userAudit);
     // }
@@ -50,13 +50,13 @@ export class UserService {
   }
 
   async updateUser(id: bigint, userData: any, loginUserId: number) {
-    const userRepo = this.dataSource.getRepository(User);
+    const userRepo = this.dataSource.getRepository(Users);
     const user = await userRepo.findOneBy({ user_id: id });
     if (user) {
       userRepo.merge(user, userData);
       await userRepo.save(user);
-      const actionTypeRepo = this.dataSource.getRepository(ActionType);
-      const userAuditRepo = this.dataSource.getRepository(UserAudit);
+      const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
+      const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
       const actionType = await actionTypeRepo.findOneBy({
         action_type: "update",
       });
@@ -64,7 +64,7 @@ export class UserService {
       //   const userAudit = userAuditRepo.create({
       //     user_id: user.user_id,
       //     action_type_id: actionType.action_type_id,
-      //     login_user_id: loginUserId,
+      //     login_id: loginUserId,
       //   });
       //   await userAuditRepo.save(userAudit);
       // }
@@ -75,14 +75,14 @@ export class UserService {
   }
 
   async deleteUser(id: bigint, loginUserId: number): Promise<boolean> {
-    const userRepo = this.dataSource.getRepository(User);
+    const userRepo = this.dataSource.getRepository(Users);
     const user = await userRepo.findOneBy({ user_id: id });
 
     if (user) {
       await userRepo.remove(user);
 
-      const actionTypeRepo = this.dataSource.getRepository(ActionType);
-      const userAuditRepo = this.dataSource.getRepository(UserAudit);
+      const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
+      const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
 
       const actionType = await actionTypeRepo.findOneBy({
         action_type: "delete",
@@ -92,7 +92,7 @@ export class UserService {
       //   const userAudit = userAuditRepo.create({
       //     user_id: id,
       //     action_type_id: actionType.action_type_id,
-      //     login_user_id: loginUserId,
+      //     login_id: loginUserId,
       //   });
       //   await userAuditRepo.save(userAudit);
       // }
@@ -104,12 +104,12 @@ export class UserService {
   }
 
   async getUserById(id: bigint) {
-    const userRepo = this.dataSource.getRepository(User);
+    const userRepo = this.dataSource.getRepository(Users);
     return userRepo.findOneBy({ user_id: id });
   }
 
   async getAllUsers() {
-    const userRepo = this.dataSource.getRepository(User);
+    const userRepo = this.dataSource.getRepository(Users);
     return userRepo.find();
   }
 }

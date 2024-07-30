@@ -5,10 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { City } from "./city.entity";
+import { Cities } from "./cities.entity";
 
-@Entity("Address")
-export class Address {
+@Entity("Addresses")
+export class Addresses {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   address_id!: bigint;
 
@@ -24,9 +24,9 @@ export class Address {
   @Column({ type: "text", nullable: true })
   neighborhood?: string;
 
-  @ManyToOne(() => City, { onDelete: "CASCADE" })
+  @ManyToOne(() => Cities, { onDelete: "CASCADE" })
   @JoinColumn({ name: "city_id" })
-  city!: City;
+  city!: Cities;
 
   @Column({ type: "varchar", length: 255 })
   zip_code!: string;

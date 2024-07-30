@@ -1,69 +1,77 @@
-// Use DBML to define your database structure
+// Define the database structure using DBML
 // Docs: https://dbml.dbdiagram.io/docs
 
-Table LoginUsers {
-  login_user_id bigint [primary key, increment]
-  username varchar(255)
-  password varchar(255)
-  status bool
-  created_at timestamp 
-  updated_at timestamp
+// Table to store user login information
+Table UserLogins {
+  login_id bigint [primary key, increment] // Unique identifier for the login
+  username varchar(255) // Username
+  password varchar(255) // Password
+  status bool // Login status (active/inactive)
+  created_at timestamp // Timestamp of when the record was created
+  updated_at timestamp // Timestamp of the last update
 }
 
+// Table to store user details
 Table Users {
-  user_id bigint [primary key, increment]
-  cpf varchar(11) [unique]
-  nome varchar(255)
-  birth_date date
-  address_id bigint [unique]
-  active bool
+  user_id bigint [primary key, increment] // Unique identifier for the user
+  cpf varchar(11) [unique] // User's CPF (unique)
+  name varchar(255) // Full name of the user
+  birth_date date // User's birth date
+  address_id bigint [unique] // Unique identifier for the user's address
+  is_active bool // User status (active/inactive)
 }
 
-Table UserAudit {
-  audit_id bigint [primary key, increment]
-  user_id bigint
-  action_type_id bigint
-  action_time timestamp
-  login_user_id bigint
+// Table to record user audit logs
+Table UserAuditLogs {
+  audit_id bigint [primary key, increment] // Unique identifier for the audit record
+  user_id bigint // Identifier of the user associated with the action
+  action_type_id bigint // Identifier of the type of action performed
+  action_timestamp timestamp // Timestamp of when the action was performed
+  login_id bigint // Identifier of the login user who performed the action
 }
 
-Table ActionType {
-  action_type_id bigint [primary key, increment]
-  action_type varchar(50) [note: "create, update, delete"]
+// Table to define types of actions performed
+Table ActionTypes {
+  action_type_id bigint [primary key, increment] // Unique identifier for the action type
+  action_type varchar(50) [note: "create, update, delete"] // Type of action (create, update, delete)
 }
 
-Table Address {
-  address_id bigint [primary key, increment]
-  street text
-  house_number varchar(255)
-  complement text
-  neighborhood text
-  city_id bigint
-  zip_code varchar(255)
+// Table to store address details
+Table Addresses {
+  address_id bigint [primary key, increment] // Unique identifier for the address
+  street text // Street name
+  house_number varchar(255) // House number
+  complement text // Address complement (optional)
+  neighborhood text // Neighborhood
+  city_id bigint // Identifier of the city
+  zip_code varchar(255) // Address ZIP code
 }
 
-Table Citys {
-  city_id bigint [primary key, increment]
-  city_name varchar(255)
-  state_id bigint
+// Table to store city details
+Table Cities {
+  city_id bigint [primary key, increment] // Unique identifier for the city
+  city_name varchar(255) // Name of the city
+  state_id bigint // Identifier of the state
 }
 
-Table State {
-  state_id bigint [primary key, increment]
-  state_name varchar(255)
-  country_id bigint
+// Table to store state details
+Table States {
+  state_id bigint [primary key, increment] // Unique identifier for the state
+  state_name varchar(255) // Name of the state
+  country_id bigint // Identifier of the country
 }
 
-Table Country {
-  country_id bigint [primary key, increment]
-  country_name varchar(255)
+// Table to store country details
+Table Countries {
+  country_id bigint [primary key, increment] // Unique identifier for the country
+  country_name varchar(255) // Name of the country
 }
 
-Ref: Users.address_id > Address.address_id
-Ref: UserAudit.user_id > Users.user_id
-Ref: UserAudit.action_type_id > ActionType.action_type_id
-Ref: UserAudit.login_user_id > LoginUsers.login_user_id
-Ref: Address.city_id > Citys.city_id
-Ref: Citys.state_id > State.state_id
-Ref: State.country_id > Country.country_id
-
+// References between tables
+Ref: Users.address_id > Addresses.address_id
+Ref: UserAuditLogs.user_id > Users.user_id
+Ref: UserAuditLogs.action_type_id > ActionTypes.action_type_id
+Ref: UserAuditLogs.login_id > UserLogins.login_id
+Ref: Addresses.city_id > Cities.city_id
+Ref: Cities.state_id > States.state_id
+Ref: States.country_id > Countries.country_id

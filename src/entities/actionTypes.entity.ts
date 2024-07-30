@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("ActionType")
-export class ActionType {
+@Entity("ActionTypes")
+export class ActionTypes {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   action_type_id!: bigint;
 

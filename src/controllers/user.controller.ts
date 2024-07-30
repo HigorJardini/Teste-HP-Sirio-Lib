@@ -32,7 +32,7 @@ import { JwtPayload } from "jsonwebtoken";
  *               address_id:
  *                 type: integer
  *                 nullable: true
- *               active:
+ *               is_active:
  *                 type: boolean
  *     responses:
  *       201:
@@ -54,7 +54,7 @@ import { JwtPayload } from "jsonwebtoken";
  *                 address_id:
  *                   type: integer
  *                   nullable: true
- *                 active:
+ *                 is_active:
  *                   type: boolean
  *       401:
  *         description: Unauthorized
@@ -116,7 +116,7 @@ export class UserController {
    *               address_id:
    *                 type: integer
    *                 nullable: true
-   *               active:
+   *               is_active:
    *                 type: boolean
    *     responses:
    *       200:
@@ -138,7 +138,7 @@ export class UserController {
    *                 address_id:
    *                   type: integer
    *                   nullable: true
-   *                 active:
+   *                 is_active:
    *                   type: boolean
    *       401:
    *         description: Unauthorized
@@ -254,7 +254,7 @@ export class UserController {
    *                 address_id:
    *                   type: integer
    *                   nullable: true
-   *                 active:
+   *                 is_active:
    *                   type: boolean
    *       404:
    *         description: User not found
@@ -305,7 +305,7 @@ export class UserController {
    *                   address_id:
    *                     type: integer
    *                     nullable: true
-   *                   active:
+   *                   is_active:
    *                     type: boolean
    *       500:
    *         description: Internal server error

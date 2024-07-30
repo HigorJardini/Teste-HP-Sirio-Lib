@@ -5,10 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { Address } from "./address.entity";
+import { Addresses } from "./addresses.entity";
 
 @Entity("Users")
-export class User {
+export class Users {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   user_id!: bigint;
 
@@ -16,15 +16,15 @@ export class User {
   cpf!: string;
 
   @Column({ type: "varchar", length: 255 })
-  nome!: string;
+  name!: string;
 
   @Column({ type: "date" })
   birth_date!: Date;
 
-  @ManyToOne(() => Address, { nullable: true, onDelete: "SET NULL" })
+  @ManyToOne(() => Addresses, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "address_id" })
-  address?: Address;
+  addresses?: Addresses;
 
   @Column({ type: "boolean" })
-  active!: boolean;
+  is_active!: boolean;
 }

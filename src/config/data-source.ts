@@ -1,12 +1,12 @@
 import { DataSource } from "typeorm";
-import { LoginUser } from "../entities/loginUser.entity";
-import { User } from "../entities/user.entity";
-import { Address } from "../entities/address.entity";
-import { City } from "../entities/city.entity";
-import { State } from "../entities/state.entity";
-import { Country } from "../entities/country.entity";
-import { ActionType } from "../entities/actionType.entity";
-import { UserAudit } from "../entities/userAudit.entity";
+import { UserLogins } from "../entities/userLogins.entity";
+import { Users } from "../entities/users.entity";
+import { Addresses } from "../entities/addresses.entity";
+import { Cities } from "../entities/cities.entity";
+import { States } from "../entities/states.entity";
+import { Countries } from "../entities/countries.entity";
+import { ActionTypes } from "../entities/actionTypes.entity";
+import { UserAuditLogs } from "../entities/userAuditLogs.entity";
 
 const dataSource = new DataSource({
   type: "mysql",
@@ -18,14 +18,14 @@ const dataSource = new DataSource({
   synchronize: false, // Development and testing: true
   logging: true, // Enable logging for debugging
   entities: [
-    LoginUser,
-    User,
-    Address,
-    City,
-    State,
-    Country,
-    ActionType,
-    UserAudit,
+    UserLogins,
+    Users,
+    Addresses,
+    Cities,
+    States,
+    Countries,
+    ActionTypes,
+    UserAuditLogs,
   ],
   migrations: [],
   subscribers: [],

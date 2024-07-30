@@ -5,17 +5,17 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { Country } from "./country.entity";
+import { Countries } from "./countries.entity";
 
-@Entity("State")
-export class State {
+@Entity("States")
+export class States {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   state_id!: bigint;
 
   @Column({ type: "varchar", length: 255 })
   state_name!: string;
 
-  @ManyToOne(() => Country, { onDelete: "CASCADE" })
+  @ManyToOne(() => Countries, { onDelete: "CASCADE" })
   @JoinColumn({ name: "country_id" })
-  country!: Country;
+  country!: Countries;
 }
