@@ -61,7 +61,7 @@ This project serves as a practical exercise to evaluate my technical skills and 
 
 ## Database Diagram
 
-![Database Diagram](./public/dbdiagram.png)
+![Database Diagram](./public/dbdiagram-us.png)
 
 You can view the database diagram script [here](./dbdiagram.io.sql) or open it online using this link: [dbdiagram.io](https://dbdiagram.io/d/66a8c2f68b4bb5230ebc7894).
 
@@ -158,7 +158,7 @@ Este projeto serve como um exercício prático para avaliar minhas habilidades t
 
 ## Diagrama do Banco de Dados
 
-![Diagrama do Banco de Dados](./public/dbdiagram.png)
+![Diagrama do Banco de Dados](./public/dbdiagram-br.png)
 
 Você pode visualizar o script do diagrama do banco de dados [aqui](./dbdiagram.io.sql) ou abri-lo online usando este link: [dbdiagram.io](https://dbdiagram.io/d/66a8c2f68b4bb5230ebc7894).
 
