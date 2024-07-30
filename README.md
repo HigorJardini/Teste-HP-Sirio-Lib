@@ -47,7 +47,7 @@ This project serves as a practical exercise to evaluate my technical skills and 
 
 ## Versions Used
 
-- **Node.js**: 18.x
+- **Node.js**: 20.x
 - **TypeScript**: 5.x
 - **Express**: 4.x
 - **TypeORM**: 0.3.x
@@ -144,7 +144,7 @@ Este projeto serve como um exercício prático para avaliar minhas habilidades t
 
 ## Versões Utilizadas
 
-- **Node.js**: 18.x
+- **Node.js**: 20.x
 - **TypeScript**: 5.x
 - **Express**: 4.x
 - **TypeORM**: 0.3.x
