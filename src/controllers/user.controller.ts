@@ -1,0 +1,322 @@
+import { Request, Response } from "express";
+import { UserService } from "../services/user.service";
+import { JwtPayload } from "jsonwebtoken";
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Operations related to users
+ */
+
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cpf:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               birth_date:
+ *                 type: string
+ *                 format: date
+ *               address_id:
+ *                 type: integer
+ *                 nullable: true
+ *               active:
+ *                 type: boolean
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user_id:
+ *                   type: integer
+ *                 cpf:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 birth_date:
+ *                   type: string
+ *                   format: date
+ *                 address_id:
+ *                   type: integer
+ *                   nullable: true
+ *                 active:
+ *                   type: boolean
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+export class UserController {
+  private userService: UserService;
+
+  constructor(userService: UserService) {
+    this.userService = userService;
+  }
+
+  public async createUser(req: Request, res: Response): Promise<Response> {
+    try {
+      const userData = req.body;
+      const loginUserId = (req.user as JwtPayload)?.id;
+
+      if (!loginUserId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const newUser = await this.userService.createUser(userData, loginUserId);
+      return res.status(201).json(newUser);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   put:
+   *     summary: Update an existing user
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID of the user to be updated
+   *         schema:
+   *           type: integer
+   *           format: int64
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               cpf:
+   *                 type: string
+   *               name:
+   *                 type: string
+   *               birth_date:
+   *                 type: string
+   *                 format: date
+   *               address_id:
+   *                 type: integer
+   *                 nullable: true
+   *               active:
+   *                 type: boolean
+   *     responses:
+   *       200:
+   *         description: User updated successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 user_id:
+   *                   type: integer
+   *                 cpf:
+   *                   type: string
+   *                 name:
+   *                   type: string
+   *                 birth_date:
+   *                   type: string
+   *                   format: date
+   *                 address_id:
+   *                   type: integer
+   *                   nullable: true
+   *                 active:
+   *                   type: boolean
+   *       401:
+   *         description: Unauthorized
+   *       404:
+   *         description: User not found
+   *       500:
+   *         description: Internal server error
+   */
+  public async updateUser(req: Request, res: Response): Promise<Response> {
+    try {
+      const userId = BigInt(req.params.id);
+      const userData = req.body;
+      const loginUserId = (req.user as JwtPayload)?.id;
+
+      if (!loginUserId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const updatedUser = await this.userService.updateUser(
+        userId,
+        userData,
+        loginUserId
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   delete:
+   *     summary: Remove a user
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID of the user to be removed
+   *         schema:
+   *           type: integer
+   *           format: int64
+   *     responses:
+   *       204:
+   *         description: User removed successfully
+   *       401:
+   *         description: Unauthorized
+   *       404:
+   *         description: User not found
+   *       500:
+   *         description: Internal server error
+   */
+  public async deleteUser(req: Request, res: Response): Promise<Response> {
+    try {
+      const userId = BigInt(req.params.id);
+      const loginUserId = (req.user as JwtPayload)?.id;
+
+      if (!loginUserId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const success = await this.userService.deleteUser(userId, loginUserId);
+
+      if (!success) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(204).send();
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   get:
+   *     summary: Retrieve a user by ID
+   *     tags: [Users]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: ID of the user to be retrieved
+   *         schema:
+   *           type: integer
+   *           format: int64
+   *     responses:
+   *       200:
+   *         description: User found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 user_id:
+   *                   type: integer
+   *                 cpf:
+   *                   type: string
+   *                 name:
+   *                   type: string
+   *                 birth_date:
+   *                   type: string
+   *                   format: date
+   *                 address_id:
+   *                   type: integer
+   *                   nullable: true
+   *                 active:
+   *                   type: boolean
+   *       404:
+   *         description: User not found
+   *       500:
+   *         description: Internal server error
+   */
+  public async getUserById(req: Request, res: Response): Promise<Response> {
+    try {
+      const userId = BigInt(req.params.id);
+      const user = await this.userService.getUserById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Retrieve all users
+   *     tags: [Users]
+   *     responses:
+   *       200:
+   *         description: List of users
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   user_id:
+   *                     type: integer
+   *                   cpf:
+   *                     type: string
+   *                   name:
+   *                     type: string
+   *                   birth_date:
+   *                     type: string
+   *                     format: date
+   *                   address_id:
+   *                     type: integer
+   *                     nullable: true
+   *                   active:
+   *                     type: boolean
+   *       500:
+   *         description: Internal server error
+   */
+  public async getAllUsers(req: Request, res: Response): Promise<Response> {
+    try {
+      const users = await this.userService.getAllUsers();
+      return res.status(200).json(users);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  }
+}

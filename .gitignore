@@ -12,11 +12,8 @@ Thumbs.db
 build/
 coverage/
 *.tgz
-*.sql
+#*.sql
 *.sqlite
 package-lock.json
 yarn.lock
 *.tsbuildinfo
-node_modules/
-dist/
-.env

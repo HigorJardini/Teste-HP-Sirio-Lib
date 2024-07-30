@@ -1,0 +1,60 @@
+@baseUrl = http://localhost:3000
+@username = admin
+@password = securitypassword123
+@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6Im5ld3VzZXIiLCJpYXQiOjE3MjIzMzI2MTUsImV4cCI6MTcyMjMzNjIxNX0.mAGsgVDznAx-GtNvIa7RKNfni__BI_HFZA5Mr2qUL1s
+
+### Generate JWT Token
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Register New User
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### Create New User (Protected)
+POST {{baseUrl}}/api/users
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "cpf": "12345678901",
+  "nome": "Dwight Schrute",
+  "birth_date": "1970-01-20",
+  "address_id": 1,
+  "active": true
+}
+
+### Update Existing User (Protected)
+PUT {{baseUrl}}/api/users/1
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "cpf": "12345678901",
+  "nome": "Dwight Schrute Updated",
+  "birth_date": "1970-01-20",
+  "address_id": 2,
+  "active": true
+}
+
+### Delete User (Protected)
+DELETE {{baseUrl}}/api/users/1
+Authorization: Bearer {{jwt_token}}
+
+### Get User by ID (Protected)
+GET {{baseUrl}}/api/users/1
+Authorization: Bearer {{jwt_token}}
+
+### Get All Users (Protected)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{jwt_token}}

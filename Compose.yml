@@ -2,24 +2,34 @@ version: "3.8"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
       - .:/usr/src/app
-    command: npm run start:dev
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=${MYSQL_DEFAULT_HOST:-db}
+      - DB_USER=root
+      - DB_PASSWORD=${MYSQL_DEFAULT_ROOT_PASSWORD:-password}
+      - DB_NAME=${MYSQL_DEFAULT_DATABASE:-siriodb}
+    command: ["npm", "run", "start:prod"]
     depends_on:
       - db
-    environment:
-      - MYSQL_HOST=${MYSQL_DEFAULT_HOST:-db}
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=${MYSQL_DEFAULT_ROOT_PASSWORD:-password}
-      - MYSQL_DATABASE=${MYSQL_DEFAULT_DATABASE:-siriodb}
+
+  adminer:
+    image: adminer
+    ports:
+      - "8090:8080"
+    depends_on:
+      - db
 
   db:
-    image: mysql:8
-    container_name: mysql
+    image: mysql:8.0
+    restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
@@ -27,6 +37,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DEFAULT_DATABASE:-siriodb}
     volumes:
       - db:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
-  db: local
+  db:
+    driver: local
