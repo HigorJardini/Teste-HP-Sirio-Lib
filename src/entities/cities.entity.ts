@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { States } from "./states.entity";
+import { Addresses } from "./addresses.entity";
 
 @Entity("Cities")
 export class Cities {
@@ -17,5 +19,8 @@ export class Cities {
 
   @ManyToOne(() => States, { onDelete: "CASCADE" })
   @JoinColumn({ name: "state_id" })
-  state: States = new States();
+  state!: States;
+
+  @OneToMany(() => Addresses, (address) => address.city)
+  addresses!: Addresses[];
 }

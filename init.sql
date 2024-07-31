@@ -1,13 +1,15 @@
 -- Create Tables
 CREATE TABLE Countries (
     country_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    country_name VARCHAR(255) NOT NULL
+    country_name VARCHAR(255) NOT NULL,
+    iso_code VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE States (
     state_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     state_name VARCHAR(255) NOT NULL,
     country_id BIGINT NOT NULL,
+    iso_code VARCHAR(20) NOT NULL,
     FOREIGN KEY (country_id) REFERENCES Countries(country_id)
 );
 
@@ -63,21 +65,3 @@ CREATE TABLE UserAuditLogs (
     FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
     FOREIGN KEY (login_id) REFERENCES UserLogins(login_id)
 );
-
--- Insert Init Data
-
--- Insert Country
-INSERT INTO Countries (country_name) VALUES
-('Brazil');
-
--- Insert State
-INSERT INTO States (state_name, country_id) VALUES
-('São Paulo', 1);
-
--- Insert City
-INSERT INTO Cities (city_name, state_id) VALUES
-('São Paulo', 1);
-
--- Insert Address
-INSERT INTO Addresses (street, house_number, complement, neighborhood, city_id, zip_code) VALUES
-('Rua Dona Adma Jafet', '91', '115', 'Bela Vista', 1, '01308050');

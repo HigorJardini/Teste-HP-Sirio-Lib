@@ -22,6 +22,7 @@ services:
 
   adminer:
     image: adminer
+    restart: unless-stopped
     ports:
       - "8090:8080"
     depends_on:

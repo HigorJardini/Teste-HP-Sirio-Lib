@@ -9,58 +9,6 @@ import { JwtPayload } from "jsonwebtoken";
  *   description: Operations related to users
  */
 
-/**
- * @swagger
- * /users:
- *   post:
- *     summary: Create a new user
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               cpf:
- *                 type: string
- *               name:
- *                 type: string
- *               birth_date:
- *                 type: string
- *                 format: date
- *               address_id:
- *                 type: integer
- *                 nullable: true
- *               is_active:
- *                 type: boolean
- *     responses:
- *       201:
- *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user_id:
- *                   type: integer
- *                 cpf:
- *                   type: string
- *                 name:
- *                   type: string
- *                 birth_date:
- *                   type: string
- *                   format: date
- *                 address_id:
- *                   type: integer
- *                   nullable: true
- *                 is_active:
- *                   type: boolean
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Internal server error
- */
 export class UserController {
   private userService: UserService;
 
@@ -68,6 +16,131 @@ export class UserController {
     this.userService = userService;
   }
 
+  /**
+   * @swagger
+   * /users:
+   *   post:
+   *     summary: Create a new user
+   *     tags: [Users]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               cpf:
+   *                 type: string
+   *               name:
+   *                 type: string
+   *               birth_date:
+   *                 type: string
+   *                 format: date
+   *               address:
+   *                 type: object
+   *                 properties:
+   *                   street:
+   *                     type: string
+   *                   house_number:
+   *                     type: string
+   *                   complement:
+   *                     type: string
+   *                     nullable: true
+   *                   neighborhood:
+   *                     type: string
+   *                   city:
+   *                     type: object
+   *                     properties:
+   *                       city_name:
+   *                         type: string
+   *                       state:
+   *                         type: object
+   *                         properties:
+   *                           state_name:
+   *                             type: string
+   *                           iso_code:
+   *                             type: string
+   *                           country:
+   *                             type: object
+   *                             properties:
+   *                               country_name:
+   *                                 type: string
+   *                               iso_code:
+   *                                 type: string
+   *                   zip_code:
+   *                     type: string
+   *               is_active:
+   *                 type: boolean
+   *     responses:
+   *       201:
+   *         description: User created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 user_id:
+   *                   type: integer
+   *                 cpf:
+   *                   type: string
+   *                 name:
+   *                   type: string
+   *                 birth_date:
+   *                   type: string
+   *                   format: date
+   *                 address:
+   *                   type: object
+   *                   properties:
+   *                     address_id:
+   *                       type: integer
+   *                     street:
+   *                       type: string
+   *                     house_number:
+   *                       type: string
+   *                     complement:
+   *                       type: string
+   *                       nullable: true
+   *                     neighborhood:
+   *                       type: string
+   *                     city:
+   *                       type: object
+   *                       properties:
+   *                         city_name:
+   *                           type: string
+   *                         state:
+   *                           type: object
+   *                           properties:
+   *                             state_name:
+   *                               type: string
+   *                             iso_code:
+   *                               type: string
+   *                             country:
+   *                               type: object
+   *                               properties:
+   *                                 country_name:
+   *                                   type: string
+   *                                 iso_code:
+   *                                   type: string
+   *                     zip_code:
+   *                       type: string
+   *                 is_active:
+   *                   type: boolean
+   *       400:
+   *         description: User with this CPF already exists
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                 message:
+   *                   type: string
+   *       401:
+   *         description: Unauthorized
+   *       500:
+   *         description: Internal server error
+   */
   public async createUser(req: Request, res: Response): Promise<Response> {
     try {
       const userData = req.body;
@@ -80,6 +153,16 @@ export class UserController {
       const newUser = await this.userService.createUser(userData, loginUserId);
       return res.status(201).json(newUser);
     } catch (error) {
+      if (error instanceof Error) {
+        if (error.message === "User with this CPF already exists") {
+          return res
+            .status(400)
+            .json({ status: "error", message: error.message });
+        }
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
@@ -113,9 +196,39 @@ export class UserController {
    *               birth_date:
    *                 type: string
    *                 format: date
-   *               address_id:
-   *                 type: integer
-   *                 nullable: true
+   *               address:
+   *                 type: object
+   *                 properties:
+   *                   street:
+   *                     type: string
+   *                   house_number:
+   *                     type: string
+   *                   complement:
+   *                     type: string
+   *                     nullable: true
+   *                   neighborhood:
+   *                     type: string
+   *                   city:
+   *                     type: object
+   *                     properties:
+   *                       city_name:
+   *                         type: string
+   *                       state:
+   *                         type: object
+   *                         properties:
+   *                           state_name:
+   *                             type: string
+   *                           iso_code:
+   *                             type: string
+   *                           country:
+   *                             type: object
+   *                             properties:
+   *                               country_name:
+   *                                 type: string
+   *                               iso_code:
+   *                                 type: string
+   *                   zip_code:
+   *                     type: string
    *               is_active:
    *                 type: boolean
    *     responses:
@@ -135,13 +248,45 @@ export class UserController {
    *                 birth_date:
    *                   type: string
    *                   format: date
-   *                 address_id:
-   *                   type: integer
-   *                   nullable: true
+   *                 address:
+   *                   type: object
+   *                   properties:
+   *                     address_id:
+   *                       type: integer
+   *                     street:
+   *                       type: string
+   *                     house_number:
+   *                       type: string
+   *                     complement:
+   *                       type: string
+   *                       nullable: true
+   *                     neighborhood:
+   *                       type: string
+   *                     city:
+   *                       type: object
+   *                       properties:
+   *                         city_name:
+   *                           type: string
+   *                         state:
+   *                           type: object
+   *                           properties:
+   *                             state_name:
+   *                               type: string
+   *                             iso_code:
+   *                               type: string
+   *                             country:
+   *                               type: object
+   *                               properties:
+   *                                 country_name:
+   *                                   type: string
+   *                                 iso_code:
+   *                                   type: string
+   *                     zip_code:
+   *                       type: string
    *                 is_active:
    *                   type: boolean
-   *       401:
-   *         description: Unauthorized
+   *       400:
+   *         description: Bad request
    *       404:
    *         description: User not found
    *       500:
@@ -178,21 +323,19 @@ export class UserController {
    * @swagger
    * /users/{id}:
    *   delete:
-   *     summary: Remove a user
+   *     summary: Delete a user by ID
    *     tags: [Users]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ID of the user to be removed
+   *         description: ID of the user to delete
    *         schema:
    *           type: integer
    *           format: int64
    *     responses:
    *       204:
-   *         description: User removed successfully
-   *       401:
-   *         description: Unauthorized
+   *         description: User deleted successfully
    *       404:
    *         description: User not found
    *       500:
@@ -207,9 +350,9 @@ export class UserController {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      const success = await this.userService.deleteUser(userId, loginUserId);
+      const result = await this.userService.deleteUser(userId, loginUserId);
 
-      if (!success) {
+      if (!result) {
         return res.status(404).json({ message: "User not found" });
       }
 
@@ -224,19 +367,19 @@ export class UserController {
    * @swagger
    * /users/{id}:
    *   get:
-   *     summary: Retrieve a user by ID
+   *     summary: Get a user by ID
    *     tags: [Users]
    *     parameters:
    *       - in: path
    *         name: id
    *         required: true
-   *         description: ID of the user to be retrieved
+   *         description: ID of the user to fetch
    *         schema:
    *           type: integer
    *           format: int64
    *     responses:
    *       200:
-   *         description: User found
+   *         description: User fetched successfully
    *         content:
    *           application/json:
    *             schema:
@@ -251,9 +394,41 @@ export class UserController {
    *                 birth_date:
    *                   type: string
    *                   format: date
-   *                 address_id:
-   *                   type: integer
-   *                   nullable: true
+   *                 address:
+   *                   type: object
+   *                   properties:
+   *                     address_id:
+   *                       type: integer
+   *                     street:
+   *                       type: string
+   *                     house_number:
+   *                       type: string
+   *                     complement:
+   *                       type: string
+   *                       nullable: true
+   *                     neighborhood:
+   *                       type: string
+   *                     city:
+   *                       type: object
+   *                       properties:
+   *                         city_name:
+   *                           type: string
+   *                         state:
+   *                           type: object
+   *                           properties:
+   *                             state_name:
+   *                               type: string
+   *                             iso_code:
+   *                               type: string
+   *                             country:
+   *                               type: object
+   *                               properties:
+   *                                 country_name:
+   *                                   type: string
+   *                                 iso_code:
+   *                                   type: string
+   *                     zip_code:
+   *                       type: string
    *                 is_active:
    *                   type: boolean
    *       404:
@@ -281,11 +456,11 @@ export class UserController {
    * @swagger
    * /users:
    *   get:
-   *     summary: Retrieve all users
+   *     summary: Get all users
    *     tags: [Users]
    *     responses:
    *       200:
-   *         description: List of users
+   *         description: List of all users
    *         content:
    *           application/json:
    *             schema:
@@ -302,9 +477,41 @@ export class UserController {
    *                   birth_date:
    *                     type: string
    *                     format: date
-   *                   address_id:
-   *                     type: integer
-   *                     nullable: true
+   *                   address:
+   *                     type: object
+   *                     properties:
+   *                       address_id:
+   *                         type: integer
+   *                       street:
+   *                         type: string
+   *                       house_number:
+   *                         type: string
+   *                       complement:
+   *                         type: string
+   *                         nullable: true
+   *                       neighborhood:
+   *                         type: string
+   *                       city:
+   *                         type: object
+   *                         properties:
+   *                           city_name:
+   *                             type: string
+   *                           state:
+   *                             type: object
+   *                             properties:
+   *                               state_name:
+   *                                 type: string
+   *                               iso_code:
+   *                                 type: string
+   *                               country:
+   *                                 type: object
+   *                                 properties:
+   *                                   country_name:
+   *                                     type: string
+   *                                   iso_code:
+   *                                     type: string
+   *                       zip_code:
+   *                         type: string
    *                   is_active:
    *                     type: boolean
    *       500:

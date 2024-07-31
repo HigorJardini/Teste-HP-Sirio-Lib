@@ -9,22 +9,25 @@ import { Addresses } from "./addresses.entity";
 
 @Entity("Users")
 export class Users {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  @PrimaryGeneratedColumn()
   user_id!: bigint;
 
-  @Column({ type: "varchar", length: 11, unique: true })
+  @Column()
   cpf!: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column()
   name!: string;
 
-  @Column({ type: "date" })
+  @Column()
   birth_date!: Date;
 
-  @ManyToOne(() => Addresses, { nullable: true, onDelete: "SET NULL" })
-  @JoinColumn({ name: "address_id" })
-  addresses?: Addresses;
+  @Column({ nullable: true })
+  address_id!: bigint;
 
-  @Column({ type: "boolean" })
-  is_active!: boolean;
+  @Column()
+  is_active: boolean = false;
+
+  @ManyToOne(() => Addresses, { nullable: true })
+  @JoinColumn({ name: "address_id" })
+  address!: Addresses | null;
 }

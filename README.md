@@ -1,3 +1,9 @@
+<div align="center">
+   <a href="https://hospitalsiriolibanes.org.br/"><img src="./public/hospital-sirio-libanes-logo.svg" width="60px"></a>
+</div>
+
+---
+
 ## Language - Idioma
 
 - [English Version](#overview)
@@ -44,6 +50,7 @@ This project serves as a practical exercise to evaluate my technical skills and 
 - **Jest**: A testing framework for JavaScript, used for running unit and integration tests.
 - **Docker**: A platform for developing, shipping, and running applications inside containers.
 - **Docker Compose**: A tool for defining and running multi-container Docker applications.
+- **Swagger**: A tool for documenting RESTful APIs.
 
 ## Versions Used
 
@@ -56,14 +63,15 @@ This project serves as a practical exercise to evaluate my technical skills and 
 - **Jest**: 29.x
 - **Docker**: 24.x
 - **Docker Compose**: 2.x
+- **Swagger**: 6.x
 
 ---
 
 ## Database Diagram
 
-![Database Diagram](./public/dbdiagram-us.png)
+![Database Diagram](./public/Diagram-Teste-Hospital-Sirio-Libanes-US.png)
 
-You can view the database diagram script [here](./dbdiagram.io.sql) or open it online using this link: [dbdiagram.io](https://dbdiagram.io/d/66a8c2f68b4bb5230ebc7894).
+You can view the database diagram script [here](./dbdiagram.io.sql) or open it online using this link: [dbdiagram.io](https://dbdiagram.io/d/Diagram-Test-Hospital-Sirio-Libanes-US-66a8c2f68b4bb5230ebc7894).
 
 ---
 
@@ -98,7 +106,54 @@ To install the project, follow these steps:
 
 - **Swagger API Documentation**: The Swagger API documentation can be accessed at http://localhost:3000/api-docs/. This provides detailed information about the API endpoints and how to use them.
 
+![Swagger Documentation](./public/Docs-Swagger.png)
+You can view the Swagger API documentation [here](http://localhost:3000/api-docs/).
+
 - **Adminer**: Adminer is available for internal database management at http://localhost:8089. This tool allows you to manage and interact with the database directly.
+
+![Adminer](./public/Adminer-US.png)
+You can access Adminer for internal database management [here](http://localhost:8090/).
+
+- **API Testing with api.http**: You can view and test the API using the api.http file included in the project. This file contains predefined API requests that can be executed using the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension in VSCode. Make sure to install the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension to enable this functionality.
+
+## Implementation Suggestions
+
+To enhance the security and manageability of my system, I suggest implementing a role-based access control (RBAC) system. This system will allow me to define roles for users and assign specific permissions to those roles. Here’s how I can approach this:
+
+1. **Create a Roles Table**:
+   - This table will store the different roles available in the system (e.g., Admin, Editor, Viewer).
+   ```dbml
+      Table Roles {
+         id_role bigint [primary key, increment] // Unique identifier for the role
+         role_name varchar(255) // Name of the role (e.g., Admin, Editor, Viewer)
+      }
+   ```
+2. **Create a UserRoles Table**:
+   - This table will establish a many-to-many relationship between users and roles, allowing a user to have multiple roles.
+   ```dbml
+      Table UserRoles {
+         id_user_role bigint [primary key, increment] // Unique identifier for the user-role relationship
+         id_user bigint // Identifier of the user
+         id_role bigint // Identifier of the role
+      }
+   ```
+3. **Update the Users Table**:
+   - Ensure the Users table is connected to the UserRoles table.
+   ```dbml
+      Ref: UserRoles.id_user > Users.id_usuario
+      Ref: UserRoles.id_role > Roles.id_role
+   ```
+4. **Define Permissions for Each Role**:
+   - Create a table to define what actions each role can perform (create, update, delete).
+   ```dbml
+      Table RolePermissions {
+         id_role_permission bigint [primary key, increment] // Unique identifier for the role permission
+         id_role bigint // Identifier of the role
+         can_create bool // Permission to create
+         can_update bool // Permission to update
+         can_delete bool // Permission to delete
+      }
+   ```
 
 ---
 
@@ -141,6 +196,7 @@ Este projeto serve como um exercício prático para avaliar minhas habilidades t
 - **Jest**: Um framework de testes para JavaScript, usado para rodar testes unitários e de integração.
 - **Docker**: Uma plataforma para desenvolver, enviar e executar aplicações dentro de contêineres.
 - **Docker Compose**: Uma ferramenta para definir e rodar aplicações Docker de múltiplos contêineres.
+- **Swagger**: Uma ferramenta para documentar APIs RESTful.
 
 ## Versões Utilizadas
 
@@ -153,14 +209,15 @@ Este projeto serve como um exercício prático para avaliar minhas habilidades t
 - **Jest**: 29.x
 - **Docker**: 24.x
 - **Docker Compose**: 2.x
+- **Swagger**: 6.x
 
 ---
 
 ## Diagrama do Banco de Dados
 
-![Diagrama do Banco de Dados](./public/dbdiagram-br.png)
+![Diagrama do Banco de Dados](./public/Diagrama-Teste-Hospital-Sirio-Libanes-BR.png)
 
-Você pode visualizar o script do diagrama do banco de dados [aqui](./dbdiagram.io.sql) ou abri-lo online usando este link: [dbdiagram.io](https://dbdiagram.io/d/66a8c2f68b4bb5230ebc7894).
+Você pode visualizar o script do diagrama do banco de dados [aqui](./dbdiagram.io.sql) ou abri-lo online usando este link: [dbdiagram.io](https://dbdiagram.io/d/Diagrama-Teste-Hospital-Sirio-Libanes-BR-66aa35c48b4bb5230edb800a).
 
 ---
 
@@ -195,4 +252,51 @@ Para instalar o projeto, siga estas etapas:
 
 - **Documentação da API Swagger**: A documentação da API Swagger pode ser acessada em http://localhost:3000/api-docs/. Isso fornece informações detalhadas sobre os endpoints da API e como usá-los.
 
+![Documentação Swagger](./public/Docs-Swagger.png)
+Você pode visualizar a documentação da API Swagger[here](http://localhost:3000/api-docs/). (infelizmente não foi traduzido).
+
 - **Adminer**: O Adminer está disponível para gerenciamento interno do banco de dados em http://localhost:8089. Esta ferramenta permite que você gerencie e interaja com o banco de dados diretamente.
+
+![Adminer](./public/Adminer-BR.png)
+Você pode acessar o Adminer para gerenciamento interno do banco de dados [aqui](http://localhost:8090/).
+
+- **Teste de API com api.http**: Você pode visualizar e testar a API usando o arquivo api.http incluído no projeto. Este arquivo contém requisições de API pré-definidas que podem ser executadas usando a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) no VSCode. Certifique-se de instalar a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) para habilitar essa funcionalidade.
+
+## Sugestões de Implementação
+
+Para aprimorar a segurança e a gerenciabilidade do meu sistema, eu sugiro a implementação de um sistema de controle de acesso baseado em roles (RBAC). Este sistema me permitirá definir roles para os usuários e atribuir permissões específicas a essas roles. Aqui está como eu posso abordar isso:
+
+1. **Criar uma Tabela de Roles**:
+   - Esta tabela armazenará as diferentes roles disponíveis no sistema (por exemplo, Admin, Editor, Visualizador).
+   ```dbml
+      Table Funcoes {
+         id_funcao bigint [primary key, increment] // Identificador único da função
+         nome_funcao varchar(255) // Nome da função (por exemplo, Admin, Editor, Visualizador)
+      }
+   ```
+2. **Criar uma Tabela de UserRoles:**:
+   - Esta tabela estabelecerá um relacionamento muitos-para-muitos entre usuários e roles, permitindo que um usuário tenha múltiplas roles.
+   ```dbml
+      Table FuncoesUsuarios {
+         id_funcao_usuario bigint [primary key, increment] // Identificador único do relacionamento usuário-função
+         id_usuario bigint // Identificador do usuário
+         id_funcao bigint // Identificador da função
+      }
+   ```
+3. **Atualizar a Tabela de Usuários**:
+   - Garantir que a tabela de usuários esteja conectada à tabela de UserRoles.
+   ```dbml
+      Ref: FuncoesUsuarios.id_usuario > Usuarios.id_usuario
+      Ref: FuncoesUsuarios.id_funcao > Funcoes.id_funcao
+   ```
+4. **Definir Permissões para Cada Role**:
+   - Criar uma tabela para definir quais ações cada role pode realizar (criar, atualizar, deletar).
+   ```dbml
+      Table PermissoesFuncoes {
+         id_permissao_funcao bigint [primary key, increment] // Identificador único da permissão da função
+         id_funcao bigint // Identificador da função
+         pode_criar bool // Permissão para criar
+         pode_atualizar bool // Permissão para atualizar
+         pode_deletar bool // Permissão para deletar
+      }
+   ```

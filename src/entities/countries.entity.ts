@@ -7,4 +7,7 @@ export class Countries {
 
   @Column({ type: "varchar", length: 255 })
   country_name!: string;
+
+  @Column({ type: "varchar", length: 20 })
+  iso_code!: string;
 }
