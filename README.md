@@ -1,5 +1,5 @@
 <div align="center">
-   <a href="https://hospitalsiriolibanes.org.br/"><img src="./public/hospital-sirio-libanes-logo.svg" width="60px"></a>
+   <a href="https://hospitalsiriolibanes.org.br/"><img src="./public/hospital-sirio-libanes-logo.svg" width="250px"></a>
 </div>
 
 ---
