@@ -15,6 +15,9 @@ export class States {
   @Column({ type: "varchar", length: 255 })
   state_name!: string;
 
+  @Column({ type: "varchar", length: 20 })
+  iso_code!: string;
+
   @ManyToOne(() => Countries, { onDelete: "CASCADE" })
   @JoinColumn({ name: "country_id" })
   country!: Countries;

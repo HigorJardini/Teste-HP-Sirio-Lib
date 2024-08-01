@@ -8,8 +8,9 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    volumes:
-      - .:/usr/src/app
+    # 
+    # volumes:
+    #   - .:/usr/src/app
     environment:
       - NODE_ENV=development
       - DB_HOST=${MYSQL_DEFAULT_HOST:-db}
@@ -22,6 +23,7 @@ services:
 
   adminer:
     image: adminer
+    restart: unless-stopped
     ports:
       - "8090:8080"
     depends_on:

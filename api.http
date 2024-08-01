@@ -1,7 +1,8 @@
 @baseUrl = http://localhost:3000
 @username = admin
 @password = securitypassword123
-@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyMzQ1MjYzLCJleHAiOjE3MjIzNDg4NjN9.gR9yj6Tk0EbCDzr61NUBswpRLYHFuiCilOkUWTrEMb0
+@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyNTAyODAwLCJleHAiOjE3MjI1MDY0MDB9.47N6H7egemaG0pfEMn-vWVfTCzccEErFbLIup70xv5c
+
 ### Generate JWT Token
 POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
@@ -26,10 +27,27 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "cpf": "12345678901",
+  "cpf": "39292420011",
   "name": "Dwight Schrute",
   "birth_date": "1970-01-20",
-  "address_id": 1,
+  "address": {
+    "street": "1725 Slough Avenue",
+    "house_number": "1725",
+    "complement": "",
+    "neighborhood": "Scranton",
+    "city": {
+      "city_name": "Scranton",
+      "state": {
+        "state_name": "Pennsylvania",
+        "iso_code": "PA",
+        "country": {
+          "country_name": "United States",
+          "iso_code": "US"
+        }
+      }
+    },
+    "postal_code": "18505"
+  },
   "is_active": true
 }
 
@@ -39,10 +57,27 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "cpf": "12345678901",
+  "cpf": "39292420011",
   "name": "Dwight Schrute Updated",
   "birth_date": "1970-01-20",
-  "address_id": 2,
+  "address": {
+    "street": "Rua Dona Adma Jafet",
+    "house_number": "91, 115",
+    "complement": "Hospital Sirio Libanes",
+    "neighborhood": "Bela Vista",
+    "city": {
+      "city_name": "São Paulo",
+      "state": {
+        "state_name": "São Paulo",
+        "iso_code": "SP",
+        "country": {
+          "country_name": "Brazil",
+          "iso_code": "BR"
+        }
+      }
+    },
+    "postal_code": "01308-050"
+  },
   "is_active": true
 }
 

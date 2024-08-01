@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Cities } from "./cities.entity";
+import { Users } from "./users.entity";
 
 @Entity("Addresses")
 export class Addresses {
@@ -24,10 +26,13 @@ export class Addresses {
   @Column({ type: "text", nullable: true })
   neighborhood?: string;
 
-  @ManyToOne(() => Cities, { onDelete: "CASCADE" })
+  @ManyToOne(() => Cities, (city) => city.addresses, { nullable: true })
   @JoinColumn({ name: "city_id" })
   city!: Cities;
 
   @Column({ type: "varchar", length: 255 })
-  zip_code!: string;
+  postal_code!: string;
+
+  @OneToMany(() => Users, (user) => user.address, { nullable: true })
+  user!: Users | null;
 }
