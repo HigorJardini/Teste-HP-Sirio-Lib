@@ -4,13 +4,10 @@ import { AuthService } from "../../src/services/auth.service";
 import { authServiceMock } from "../mocks/auth.service.mock";
 import { DataSource } from "typeorm";
 
-// Mock do DataSource
 const mockDataSource = {
   getRepository: jest.fn(),
-  // Adicione outros métodos ou propriedades necessários
 };
 
-// Mock do AuthService
 jest.mock("../../src/services/auth.service", () => ({
   AuthService: jest.fn().mockImplementation(() => authServiceMock),
 }));
@@ -21,7 +18,6 @@ describe("AuthController", () => {
   let res: Partial<Response>;
 
   beforeEach(() => {
-    // Passa o mockDataSource para o AuthService
     const authService = new AuthService(
       mockDataSource as unknown as DataSource
     );
@@ -52,7 +48,7 @@ describe("AuthController", () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       message: "User registered successfully",
-      user: { ...newUser, password: undefined }, // password should be excluded
+      user: { ...newUser, password: undefined },
     });
   });
 

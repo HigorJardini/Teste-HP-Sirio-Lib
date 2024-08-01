@@ -1,4 +1,3 @@
-// tests/utils/cpf.utils.test.ts
 import { isValidCPF } from "../../src/utils/cpf.utils";
 
 describe("isValidCPF", () => {
