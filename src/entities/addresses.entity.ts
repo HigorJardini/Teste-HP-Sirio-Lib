@@ -31,7 +31,7 @@ export class Addresses {
   city!: Cities;
 
   @Column({ type: "varchar", length: 255 })
-  zip_code!: string;
+  postal_code!: string;
 
   @OneToMany(() => Users, (user) => user.address, { nullable: true })
   user!: Users | null;

@@ -27,7 +27,7 @@ CREATE TABLE Addresses (
     complement TEXT,
     neighborhood TEXT,
     city_id BIGINT NOT NULL,
-    zip_code VARCHAR(255) NOT NULL,
+    postal_code VARCHAR(255) NOT NULL,
     FOREIGN KEY (city_id) REFERENCES Cities(city_id)
 );
 

@@ -69,7 +69,7 @@ This project serves as a practical exercise to evaluate my technical skills and 
 
 ## Database Diagram
 
-![Database Diagram](./public/Diagram-Teste-Hospital-Sirio-Libanes-US.png)
+![Database Diagram](./public/Diagram-Test-Hospital-Sirio-Libanes-US.png)
 
 You can view the database diagram script [here](./dbdiagram.io.sql) or open it online using this link: [dbdiagram.io](https://dbdiagram.io/d/Diagram-Test-Hospital-Sirio-Libanes-US-66a8c2f68b4bb5230ebc7894).
 

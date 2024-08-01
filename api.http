@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000
 @username = admin
 @password = securitypassword123
-@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyNDUxNzY1LCJleHAiOjE3MjI0NTUzNjV9.slbVZjRvHEkwyRn5JOVxjkgUbU-ltzhiK7hAaXJBVSo
+@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyNDcwNzk0LCJleHAiOjE3MjI0NzQzOTR9.M4BLQfTVa-VEucyPKvYCOn4G5bgnrovzmNYN2YvuOtI
 
 ### Generate JWT Token
 POST {{baseUrl}}/api/auth/login
@@ -27,7 +27,7 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "cpf": "12345678901",
+  "cpf": "39292420011",
   "name": "Dwight Schrute",
   "birth_date": "1970-01-20",
   "address": {
@@ -46,7 +46,7 @@ Content-Type: application/json
         }
       }
     },
-    "zip_code": "18505"
+    "postal_code": "18505"
   },
   "is_active": true
 }
@@ -57,7 +57,7 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "cpf": "12345678901",
+  "cpf": "57396597013",
   "name": "Dwight Schrute Updated",
   "birth_date": "1970-01-20",
   "address": {
@@ -76,7 +76,7 @@ Content-Type: application/json
         }
       }
     },
-    "zip_code": "18505"
+    "postal_code": "18505"
   },
   "is_active": true
 }

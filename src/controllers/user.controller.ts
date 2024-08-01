@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { JwtPayload } from "jsonwebtoken";
+import userSchema from "../dto/user.dto";
 
 /**
  * @swagger
@@ -67,7 +68,7 @@ export class UserController {
    *                                 type: string
    *                               iso_code:
    *                                 type: string
-   *                   zip_code:
+   *                   postal_code:
    *                     type: string
    *               is_active:
    *                 type: boolean
@@ -121,21 +122,25 @@ export class UserController {
    *                                   type: string
    *                                 iso_code:
    *                                   type: string
-   *                     zip_code:
+   *                     postal_code:
    *                       type: string
    *                 is_active:
    *                   type: boolean
    *       400:
-   *         description: User with this CPF already exists
+   *         description: Bad request, invalid input or validation error
    *         content:
    *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 status:
-   *                   type: string
-   *                 message:
-   *                   type: string
+   *             examples:
+   *               cpfDuplicated:
+   *                 value: { error: "User with this CPF already exists" }
+   *               cpfInvalid:
+   *                 value: { error: "CPF must be a valid CPF number" }
+   *               nameRequired:
+   *                 value: { error: "Name is required" }
+   *               birthDateInvalid:
+   *                 value: { error: "Birth date must be a valid date" }
+   *               postalCodeInvalid:
+   *                 value: { error: "Postal code must be in the format 12345-678" }
    *       401:
    *         description: Unauthorized
    *       500:
@@ -143,6 +148,11 @@ export class UserController {
    */
   public async createUser(req: Request, res: Response): Promise<Response> {
     try {
+      const { error } = userSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+
       const userData = req.body;
       const loginUserId = (req.user as JwtPayload)?.id;
 
@@ -159,11 +169,11 @@ export class UserController {
             .status(400)
             .json({ status: "error", message: error.message });
         }
-        console.error(error);
+        console.error("Unexpected error:", error);
         return res.status(500).json({ message: "Internal server error" });
       }
 
-      console.error(error);
+      console.error("Unexpected error:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   }
@@ -227,7 +237,7 @@ export class UserController {
    *                                 type: string
    *                               iso_code:
    *                                 type: string
-   *                   zip_code:
+   *                   postal_code:
    *                     type: string
    *               is_active:
    *                 type: boolean
@@ -281,12 +291,23 @@ export class UserController {
    *                                   type: string
    *                                 iso_code:
    *                                   type: string
-   *                     zip_code:
+   *                     postal_code:
    *                       type: string
    *                 is_active:
    *                   type: boolean
    *       400:
-   *         description: Bad request
+   *         description: Bad request, invalid input or validation error
+   *         content:
+   *           application/json:
+   *             examples:
+   *               cpfInvalid:
+   *                 value: { error: "CPF must be a valid CPF number" }
+   *               nameRequired:
+   *                 value: { error: "Name is required" }
+   *               birthDateInvalid:
+   *                 value: { error: "Birth date must be a valid date" }
+   *               postalCodeInvalid:
+   *                 value: { error: "Postal code must be in the format 12345-678" }
    *       404:
    *         description: User not found
    *       500:
@@ -300,6 +321,13 @@ export class UserController {
 
       if (!loginUserId) {
         return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const { error } = userSchema.validate(userData);
+      if (error) {
+        return res.status(400).json({
+          message: error.details.map((detail) => detail.message).join(", "),
+        });
       }
 
       const updatedUser = await this.userService.updateUser(
@@ -427,7 +455,7 @@ export class UserController {
    *                                   type: string
    *                                 iso_code:
    *                                   type: string
-   *                     zip_code:
+   *                     postal_code:
    *                       type: string
    *                 is_active:
    *                   type: boolean
@@ -510,7 +538,7 @@ export class UserController {
    *                                     type: string
    *                                   iso_code:
    *                                     type: string
-   *                       zip_code:
+   *                       postal_code:
    *                         type: string
    *                   is_active:
    *                     type: boolean

@@ -44,7 +44,7 @@ Table Addresses {
   complement text // Additional address details (optional)
   neighborhood text // Neighborhood of the address
   city_id bigint // Identifier of the city
-  zip_code varchar(255) // ZIP code of the address
+  postal_code varchar(255) // Postal code of the address
 }
 
 // Table to store city details
