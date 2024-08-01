@@ -110,7 +110,7 @@ To perform optional cleanup and avoid potential conflicts, you can run the follo
       - Provides options for cleaning Docker images and volumes if needed.
       - ![Docker Clear Option](./public/Docker-Clear-Option-Linux.png)
 - **Windows**:
-  You can use the provided `.bat` and `.ps1` scripts to clean and rebuild your Docker environment:
+  - You can use the provided `.bat` and `.ps1` scripts to clean and rebuild your Docker environment:
   1.  **Run the clean and build batch script**:
       ```batch
       .\docker\docker-run.bat
@@ -277,7 +277,7 @@ Para realizar limpeza opcional e evitar possíveis conflitos, você pode executa
       - Oferece opções para limpar imagens e volumes do Docker, se necessário.
       - ![Opção de limpeza do Docker](./public/Docker-Clear-Option-Linux.png)
 - **Windows**:
-  Você pode usar os scripts `.bat` e `.ps1` fornecidos para limpar e reconstruir seu ambiente Docker:
+  - Você pode usar os scripts `.bat` e `.ps1` fornecidos para limpar e reconstruir seu ambiente Docker:
   1.  **Execute o script de limpeza e construção em batch**:
       ```batch
       .\docker\docker-run.bat
