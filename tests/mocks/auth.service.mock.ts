@@ -5,4 +5,4 @@ export const authServiceMock = {
   login: jest.fn(),
 };
 
-export default AuthService; // exporta o AuthService padrão
+export default AuthService;

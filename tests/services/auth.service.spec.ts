@@ -4,11 +4,9 @@ import { UserLogins } from "../../src/entities/userLogins.entity";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// Mocks
 jest.mock("bcryptjs");
 jest.mock("jsonwebtoken");
 
-// Tipos para mocks
 type MockedUserLoginRepository = {
   findOneBy: jest.Mock<Promise<UserLogins | null>, [Partial<UserLogins>]>;
   create: jest.Mock<UserLogins, [Partial<UserLogins>]>;
@@ -28,7 +26,6 @@ describe("AuthService", () => {
   let mockDataSource: MockedDataSource;
 
   beforeEach(() => {
-    // Mock DataSource e UserLoginRepository
     mockDataSource = {
       getRepository: jest.fn(),
     } as unknown as MockedDataSource;
@@ -39,20 +36,18 @@ describe("AuthService", () => {
       save: jest.fn(),
     } as unknown as MockedUserLoginRepository;
 
-    // Mock do repositório
     mockDataSource.getRepository.mockReturnValue(
       userLoginRepo as unknown as Repository<UserLogins>
     );
 
     authService = new AuthService(mockDataSource as unknown as DataSource);
 
-    // Configuração dos mocks
     mockedBcrypt.hash.mockImplementation(async () => "hashedPassword");
     mockedBcrypt.compare.mockImplementation(
       async (password: string, hash: string) => password === "password123"
     );
     mockedJwt.sign.mockImplementation((payload, secret, options) => {
-      return "jwtToken"; // O token fictício retornado
+      return "jwtToken";
     });
   });
 

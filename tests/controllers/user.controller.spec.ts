@@ -6,7 +6,6 @@ import { UserService } from "../../src/services/user.service";
 const app = express();
 app.use(express.json());
 
-// Mock UserService
 const userService = {
   createUser: jest.fn(),
   updateUser: jest.fn(),
@@ -19,7 +18,6 @@ const userController = new UserController(
   userService as unknown as UserService
 );
 
-// Define routes
 app.post("/users", (req, res) => userController.createUser(req, res));
 app.put("/users/:id", (req, res) => userController.updateUser(req, res));
 app.delete("/users/:id", (req, res) => userController.deleteUser(req, res));
