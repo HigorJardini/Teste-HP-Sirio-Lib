@@ -7,6 +7,14 @@ if /i "%response%"=="y" (
   set clean_cache=false
 )
 
+:: Function to prompt for volumes cleanup
+set /p response="Do you want to clean Docker volumes? (y/n): "
+if /i "%response%"=="y" (
+  set clean_volumes=true
+) else (
+  set clean_volumes=false
+)
+
 :: Stop and remove existing Docker containers if running
 echo Stopping and removing existing Docker containers...
 docker-compose down
@@ -32,6 +40,14 @@ if "%clean_cache%"=="true" (
   docker system prune -f
 ) else (
   echo Skipping Docker cache cleanup.
+)
+
+:: Clean Docker volumes if prompted
+if "%clean_volumes%"=="true" (
+  echo Cleaning Docker volumes...
+  docker volume prune -f
+) else (
+  echo Skipping Docker volumes cleanup.
 )
 
 :: Rebuild and start Docker containers

@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Function to prompt the user for a yes or no response
-prompt_for_cache_clean() {
-  read -p "Do you want to clean the Docker cache? (y/n): " response
+prompt_for_clean() {
+  local prompt_message=$1
+  read -p "$prompt_message (y/n): " response
   case "$response" in
     [Yy]* ) return 0 ;;  # Yes
     [Nn]* ) return 1 ;;  # No
-    * ) echo -e "\033[31mPlease answer yes or no.\033[0m" ; prompt_for_cache_clean ;;  # Invalid input
+    * ) echo -e "\033[31mPlease answer yes or no.\033[0m" ; prompt_for_clean "$prompt_message" ;;  # Invalid input
   esac
 }
 
@@ -30,11 +31,19 @@ else
 fi
 
 # Prompt for Docker cache cleanup
-if prompt_for_cache_clean; then
+if prompt_for_clean "Do you want to clean the Docker cache?"; then
   echo -e "\033[1;32mCleaning Docker cache...\033[0m"
   docker system prune -f
 else
   echo -e "\033[1;32mSkipping Docker cache cleanup.\033[0m"
+fi
+
+# Prompt for Docker volumes cleanup
+if prompt_for_clean "Do you want to clean Docker volumes?"; then
+  echo -e "\033[1;32mCleaning Docker volumes...\033[0m"
+  docker volume prune -f
+else
+  echo -e "\033[1;32mSkipping Docker volumes cleanup.\033[0m"
 fi
 
 # Rebuild the Docker image

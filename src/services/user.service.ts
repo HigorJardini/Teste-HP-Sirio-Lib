@@ -118,6 +118,13 @@ export class UserService {
     const user = await this.userRepo.findOneById(id);
 
     if (user) {
+      if (userData.cpf && userData.cpf !== user.cpf) {
+        const existingUser = await this.userRepo.findOneByCpf(userData.cpf);
+        if (existingUser && existingUser.deleted_at === null) {
+          throw new Error("User with this CPF already exists");
+        }
+      }
+
       if (userData.address) {
         // Country exists check
         let country = await this.countryRepo.findOneByIsoCode(

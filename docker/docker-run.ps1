@@ -1,10 +1,24 @@
-# Function to prompt for cache cleanup
-$response = Read-Host "Do you want to clean the Docker cache? (y/n)"
-if ($response -eq "y") {
-    $cleanCache = $true
-} else {
-    $cleanCache = $false
+# Function to prompt for user input
+function Prompt-ForCleanup {
+    param (
+        [string]$Message
+    )
+    $response = Read-Host $Message
+    if ($response -eq "y") {
+        return $true
+    } elseif ($response -eq "n") {
+        return $false
+    } else {
+        Write-Host "Please answer 'y' or 'n'."
+        return (Prompt-ForCleanup $Message)
+    }
 }
+
+# Prompt for Docker cache cleanup
+$cleanCache = Prompt-ForCleanup "Do you want to clean the Docker cache? (y/n)"
+
+# Prompt for Docker volumes cleanup
+$cleanVolumes = Prompt-ForCleanup "Do you want to clean Docker volumes? (y/n)"
 
 # Stop and remove existing Docker containers if running
 Write-Host "Stopping and removing existing Docker containers..."
@@ -31,6 +45,14 @@ if ($cleanCache) {
     docker system prune -f
 } else {
     Write-Host "Skipping Docker cache cleanup."
+}
+
+# Clean Docker volumes if prompted
+if ($cleanVolumes) {
+    Write-Host "Cleaning Docker volumes..."
+    docker volume prune -f
+} else {
+    Write-Host "Skipping Docker volumes cleanup."
 }
 
 # Rebuild and start Docker containers

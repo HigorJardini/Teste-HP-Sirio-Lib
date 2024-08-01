@@ -328,7 +328,15 @@ export class UserController {
 
       return res.status(200).json(updatedUser);
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        if (error.message === "User with this CPF already exists") {
+          return res.status(400).json({ message: error.message });
+        }
+        console.error("Unexpected error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      console.error("Unexpected error:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   }
