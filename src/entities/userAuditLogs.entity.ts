@@ -16,16 +16,16 @@ export class UserAuditLogs {
 
   @ManyToOne(() => Users)
   @JoinColumn({ name: "user_id" })
-  user!: Users;
+  user_id!: Users;
 
   @ManyToOne(() => ActionTypes)
   @JoinColumn({ name: "action_type_id" })
   action_type!: ActionTypes;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  action_time!: Date;
-
   @ManyToOne(() => UserLogins)
   @JoinColumn({ name: "login_id" })
   login_user!: UserLogins;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  action_timestamp!: Date;
 }

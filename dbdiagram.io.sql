@@ -26,8 +26,8 @@ Table UserAuditLogs {
   audit_id bigint [primary key, increment] // Unique identifier for the audit record
   user_id bigint // Identifier of the user associated with the action
   action_type_id bigint // Identifier of the type of action performed
-  action_timestamp timestamp // Timestamp indicating when the action was performed
   login_id bigint // Identifier of the login user who performed the action
+  action_timestamp timestamp // Timestamp indicating when the action was performed
 }
 
 // Table to define types of actions performed

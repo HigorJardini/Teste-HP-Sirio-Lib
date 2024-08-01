@@ -6,6 +6,7 @@ import { ActionTypes } from "../entities/actionTypes.entity";
 import { Cities } from "../entities/cities.entity";
 import { States } from "../entities/states.entity";
 import { Countries } from "../entities/countries.entity";
+import { UserLogins } from "../entities/userLogins.entity";
 
 export class UserService {
   private dataSource: DataSource;
@@ -26,6 +27,7 @@ export class UserService {
     const cityRepo = this.dataSource.getRepository(Cities);
     const stateRepo = this.dataSource.getRepository(States);
     const countryRepo = this.dataSource.getRepository(Countries);
+    const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
     // Check if a user with the same CPF already exists
     const existingUser = await userRepo.findOneBy({ cpf: userData.cpf });
@@ -92,17 +94,26 @@ export class UserService {
     const savedUser = await userRepo.save(user);
 
     // Log user creation
-    // const actionType = await actionTypeRepo.findOneBy({
-    //   action_type: "create",
-    // });
-    // if (actionType) {
-    //   const userAudit = userAuditRepo.create({
-    //     user_id: savedUser.user_id,
-    //     action_type_id: actionType.action_type_id,
-    //     login_id: loginUserId,
-    //   });
-    //   await userAuditRepo.save(userAudit);
-    // }
+    if (savedUser instanceof Users) {
+      const actionType = await actionTypeRepo.findOneBy({
+        action_type: "create",
+      });
+      const loginUser = await loginUserRepo.findOneBy({
+        login_id: BigInt(loginUserId),
+      });
+
+      if (actionType && loginUser) {
+        const userAudit = userAuditRepo.create({
+          user_id: savedUser,
+          action_type: actionType,
+          login_user: loginUser,
+        });
+
+        await userAuditRepo.save(userAudit);
+      }
+    } else {
+      console.log("oi");
+    }
 
     return savedUser;
   }
@@ -115,6 +126,7 @@ export class UserService {
     const countryRepo = this.dataSource.getRepository(Countries);
     const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
     const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
+    const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
     const user = await userRepo.findOne({
       where: { user_id: id, deleted_at: undefined },
@@ -187,17 +199,22 @@ export class UserService {
       await userRepo.save(user);
 
       // Log user update
-      // const actionType = await actionTypeRepo.findOneBy({
-      //   action_type: "update",
-      // });
-      // if (actionType) {
-      //   const userAudit = userAuditRepo.create({
-      //     user_id: user.user_id,
-      //     action_type_id: actionType.action_type_id,
-      //     login_id: loginUserId,
-      //   });
-      //   await userAuditRepo.save(userAudit);
-      // }
+      const actionType = await actionTypeRepo.findOneBy({
+        action_type: "update",
+      });
+      const loginUser = await loginUserRepo.findOneBy({
+        login_id: BigInt(loginUserId),
+      });
+
+      if (actionType && loginUser) {
+        const userAudit = userAuditRepo.create({
+          user_id: user,
+          action_type: actionType,
+          login_user: loginUser,
+        });
+
+        await userAuditRepo.save(userAudit);
+      }
 
       return user;
     } else {
@@ -210,6 +227,7 @@ export class UserService {
     const addressRepo = this.dataSource.getRepository(Addresses);
     const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
     const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
+    const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
     // Encontre o usuário que deve ser marcado como excluído
     const user = await userRepo.findOne({
@@ -223,18 +241,22 @@ export class UserService {
       await userRepo.save(user);
 
       // Log de auditoria para a exclusão do usuário
-      // const actionType = await actionTypeRepo.findOne({
-      //   where: { action_type: "delete" },
-      // });
+      const actionType = await actionTypeRepo.findOneBy({
+        action_type: "delete",
+      });
+      const loginUser = await loginUserRepo.findOneBy({
+        login_id: BigInt(loginUserId),
+      });
 
-      // if (actionType) {
-      //   const userAudit = userAuditRepo.create({
-      //     user_id: id,
-      //     action_type_id: actionType.action_type_id,
-      //     login_id: loginUserId,
-      //   });
-      //   await userAuditRepo.save(userAudit);
-      // }
+      if (actionType && loginUser) {
+        const userAudit = userAuditRepo.create({
+          user_id: user,
+          action_type: actionType,
+          login_user: loginUser,
+        });
+
+        await userAuditRepo.save(userAudit);
+      }
 
       return true;
     }

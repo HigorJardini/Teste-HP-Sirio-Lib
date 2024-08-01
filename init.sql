@@ -60,9 +60,15 @@ CREATE TABLE UserAuditLogs (
     audit_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     action_type_id BIGINT NOT NULL,
-    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     login_id BIGINT NOT NULL,
+    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
     FOREIGN KEY (login_id) REFERENCES UserLogins(login_id)
 );
+
+-- Inserts
+
+INSERT INTO ActionTypes (action_type) VALUES ('create');
+INSERT INTO ActionTypes (action_type) VALUES ('update');
+INSERT INTO ActionTypes (action_type) VALUES ('delete');
