@@ -93,6 +93,12 @@ To install the project, follow these steps:
    ```bash
     docker-compose up -d --build
    ```
+4. Run the tests:
+   - After starting the services, you can run the tests to ensure everything is working correctly. To do this, use the test service defined in the `docker-compose.yml`:
+   ```bash
+      docker-compose run --rm test
+   ```
+   - This command will execute the `test` service, which has been configured to run the tests defined in your project. The `--rm` flag removes the test container after execution to keep the environment clean.
 
 ### Additional Installation and Maintenance Options
 
@@ -260,6 +266,12 @@ Para instalar o projeto, siga estas etapas:
    ```bash
      docker-compose up -d --build
    ```
+4. Execute os testes:
+   - Após iniciar os serviços, você pode rodar os testes para garantir que tudo esteja funcionando corretamente. Para isso, use o serviço de testes definido no `docker-compose.yml`:
+   ```bash
+      docker-compose run --rm test
+   ```
+   - Este comando executará o serviço `test`, que foi configurado para rodar os testes definidos no seu projeto. O `--rm` remove o contêiner de teste após a execução para manter o ambiente limpo.
 
 ### Opções Adicionais de Instalação e Manutenção
 
