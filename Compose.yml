@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    # 
+    #
     # volumes:
     #   - .:/usr/src/app
     environment:
@@ -40,6 +40,20 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["npm", "test"]
+    environment:
+      - NODE_ENV=test
+      - DB_HOST=${MYSQL_DEFAULT_HOST:-db}
+      - DB_USER=root
+      - DB_PASSWORD=${MYSQL_DEFAULT_ROOT_PASSWORD:-password}
+      - DB_NAME=${MYSQL_DEFAULT_DATABASE:-siriodb}
+    depends_on:
+      - db
 
 volumes:
   db:
