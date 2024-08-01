@@ -61,8 +61,8 @@ This project serves as a practical exercise to evaluate my technical skills and 
 - **MySQL**: 8.x
 - **Joi**: 17.x
 - **Jest**: 29.x
-- **Docker**: 24.x
-- **Docker Compose**: 2.x
+- **Docker**: 26.x
+- **Docker Compose**: 3.x
 - **Swagger**: 6.x
 
 ---
@@ -228,8 +228,8 @@ Este projeto serve como um exercício prático para avaliar minhas habilidades t
 - **MySQL**: 8.x
 - **Joi**: 17.x
 - **Jest**: 29.x
-- **Docker**: 24.x
-- **Docker Compose**: 2.x
+- **Docker**: 26.x
+- **Docker Compose**: 3.x
 - **Swagger**: 6.x
 
 ---
