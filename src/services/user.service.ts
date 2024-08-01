@@ -1,36 +1,37 @@
 import { DataSource } from "typeorm";
-import { Users } from "../entities/users.entity";
-import { Addresses } from "../entities/addresses.entity";
-import { UserAuditLogs } from "../entities/userAuditLogs.entity";
-import { ActionTypes } from "../entities/actionTypes.entity";
-import { Cities } from "../entities/cities.entity";
-import { States } from "../entities/states.entity";
-import { Countries } from "../entities/countries.entity";
-import { UserLogins } from "../entities/userLogins.entity";
+import { UserRepository } from "../repositories/user.repository";
+import { AddressRepository } from "../repositories/address.repository";
+import { ActionTypeRepository } from "../repositories/action-type.repository";
+import { UserAuditLogRepository } from "../repositories/user-audit-log.repository";
+import { CityRepository } from "../repositories/city.repository";
+import { StateRepository } from "../repositories/state.repository";
+import { CountryRepository } from "../repositories/country.repository";
+import { UserLoginRepository } from "../repositories/user-login.repository";
 
 export class UserService {
-  private dataSource: DataSource;
+  private userRepo: UserRepository;
+  private addressRepo: AddressRepository;
+  private actionTypeRepo: ActionTypeRepository;
+  private userAuditRepo: UserAuditLogRepository;
+  private cityRepo: CityRepository;
+  private stateRepo: StateRepository;
+  private countryRepo: CountryRepository;
+  private loginUserRepo: UserLoginRepository;
 
   constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
-  }
-
-  getDataSource() {
-    return this.dataSource;
+    this.userRepo = new UserRepository(dataSource);
+    this.addressRepo = new AddressRepository(dataSource);
+    this.actionTypeRepo = new ActionTypeRepository(dataSource);
+    this.userAuditRepo = new UserAuditLogRepository(dataSource);
+    this.cityRepo = new CityRepository(dataSource);
+    this.stateRepo = new StateRepository(dataSource);
+    this.countryRepo = new CountryRepository(dataSource);
+    this.loginUserRepo = new UserLoginRepository(dataSource);
   }
 
   async createUser(userData: any, loginUserId: number) {
-    const userRepo = this.dataSource.getRepository(Users);
-    const addressRepo = this.dataSource.getRepository(Addresses);
-    const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
-    const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
-    const cityRepo = this.dataSource.getRepository(Cities);
-    const stateRepo = this.dataSource.getRepository(States);
-    const countryRepo = this.dataSource.getRepository(Countries);
-    const loginUserRepo = this.dataSource.getRepository(UserLogins);
-
     // Check if a user with the same CPF already exists
-    const existingUser = await userRepo.findOneBy({ cpf: userData.cpf });
+    const existingUser = await this.userRepo.findOneByCpf(userData.cpf);
     if (existingUser) {
       throw new Error("User with this CPF already exists");
     }
@@ -39,181 +40,163 @@ export class UserService {
 
     if (userData.address) {
       // Country exists check
-      let country = await countryRepo.findOneBy({
-        iso_code: userData.address.city.state.country.iso_code,
-      });
+      let country = await this.countryRepo.findOneByIsoCode(
+        userData.address.city.state.country.iso_code
+      );
       if (!country) {
         // Create the country if it does not exist
-        country = countryRepo.create({
+        country = this.countryRepo.create({
           country_name: userData.address.city.state.country.country_name,
           iso_code: userData.address.city.state.country.iso_code,
         });
-        await countryRepo.save(country);
+        await this.countryRepo.save(country);
       }
 
       // State exists check
-      let state = await stateRepo.findOneBy({
-        iso_code: userData.address.city.state.iso_code,
-      });
+      let state = await this.stateRepo.findOneByIsoCode(
+        userData.address.city.state.iso_code
+      );
       if (!state) {
         // Create the state if it does not exist
-        state = stateRepo.create({
+        state = this.stateRepo.create({
           state_name: userData.address.city.state.state_name,
           iso_code: userData.address.city.state.iso_code,
           country: country,
         });
-        await stateRepo.save(state);
+        await this.stateRepo.save(state);
       }
 
       // City exists check
-      let city = await cityRepo.findOne({
-        where: { city_name: userData.address.city.city_name, state: state },
-      });
+      let city = await this.cityRepo.findOneByNameAndState(
+        userData.address.city.city_name,
+        state
+      );
       if (!city) {
         // Create the city if it does not exist
-        city = cityRepo.create({
+        city = this.cityRepo.create({
           city_name: userData.address.city.city_name,
           state: state,
         });
-        await cityRepo.save(city);
+        await this.cityRepo.save(city);
       }
 
       // Create address
-      address = addressRepo.create({
+      address = this.addressRepo.create({
         ...userData.address,
         city: city,
       });
-      await addressRepo.save(address);
+      await this.addressRepo.save(address);
     }
 
     // Create user
-    const user = userRepo.create({
+    const user = this.userRepo.create({
       ...userData,
       address: address ? address : null,
     });
-    const savedUser = await userRepo.save(user);
+    const savedUser = await this.userRepo.save(user);
 
     // Log user creation
-    if (savedUser instanceof Users) {
-      const actionType = await actionTypeRepo.findOneBy({
-        action_type: "create",
-      });
-      const loginUser = await loginUserRepo.findOneBy({
-        login_id: BigInt(loginUserId),
+    const actionType = await this.actionTypeRepo.findOneByType("create");
+    const loginUser = await this.loginUserRepo.findOneByLoginId(
+      BigInt(loginUserId)
+    );
+
+    if (actionType && loginUser) {
+      const userAudit = this.userAuditRepo.create({
+        user_id: savedUser,
+        action_type: actionType,
+        login_user: loginUser,
       });
 
-      if (actionType && loginUser) {
-        const userAudit = userAuditRepo.create({
-          user_id: savedUser,
-          action_type: actionType,
-          login_user: loginUser,
-        });
-
-        await userAuditRepo.save(userAudit);
-      }
-    } else {
-      console.log("oi");
+      await this.userAuditRepo.save(userAudit);
     }
 
     return savedUser;
   }
 
   async updateUser(id: bigint, userData: any, loginUserId: number) {
-    const userRepo = this.dataSource.getRepository(Users);
-    const addressRepo = this.dataSource.getRepository(Addresses);
-    const cityRepo = this.dataSource.getRepository(Cities);
-    const stateRepo = this.dataSource.getRepository(States);
-    const countryRepo = this.dataSource.getRepository(Countries);
-    const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
-    const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
-    const loginUserRepo = this.dataSource.getRepository(UserLogins);
-
-    const user = await userRepo.findOne({
-      where: { user_id: id, deleted_at: undefined },
-      relations: ["address"],
-    });
+    const user = await this.userRepo.findOneById(id);
 
     if (user) {
       if (userData.address) {
         // Country exists check
-        let country = await countryRepo.findOneBy({
-          iso_code: userData.address.city.state.country.iso_code,
-        });
+        let country = await this.countryRepo.findOneByIsoCode(
+          userData.address.city.state.country.iso_code
+        );
         if (!country) {
           // Create the country if it does not exist
-          country = countryRepo.create({
+          country = this.countryRepo.create({
             country_name: userData.address.city.state.country.country_name,
             iso_code: userData.address.city.state.country.iso_code,
           });
-          await countryRepo.save(country);
+          await this.countryRepo.save(country);
         }
 
         // State exists check
-        let state = await stateRepo.findOneBy({
-          iso_code: userData.address.city.state.iso_code,
-        });
+        let state = await this.stateRepo.findOneByIsoCode(
+          userData.address.city.state.iso_code
+        );
         if (!state) {
           // Create the state if it does not exist
-          state = stateRepo.create({
+          state = this.stateRepo.create({
             state_name: userData.address.city.state.state_name,
             iso_code: userData.address.city.state.iso_code,
             country: country,
           });
-          await stateRepo.save(state);
+          await this.stateRepo.save(state);
         }
 
         // City exists check
-        let city = await cityRepo.findOne({
-          where: { city_name: userData.address.city.city_name, state: state },
-        });
+        let city = await this.cityRepo.findOneByNameAndState(
+          userData.address.city.city_name,
+          state
+        );
         if (!city) {
           // Create the city if it does not exist
-          city = cityRepo.create({
+          city = this.cityRepo.create({
             city_name: userData.address.city.city_name,
             state: state,
           });
-          await cityRepo.save(city);
+          await this.cityRepo.save(city);
         }
 
         // Create or update the address
         if (user.address) {
-          user.address = addressRepo.merge(user.address, {
+          user.address = this.addressRepo.merge(user.address, {
             ...userData.address,
             city: city,
           });
-          await addressRepo.save(user.address);
+          await this.addressRepo.save(user.address);
         } else {
-          const newAddress = addressRepo.create({
+          const newAddress = this.addressRepo.create({
             ...userData.address,
             city: city,
           });
-          await addressRepo.save(newAddress);
+          await this.addressRepo.save(newAddress);
         }
       } else if (user.address) {
-        await addressRepo.remove(user.address);
+        await this.addressRepo.remove(user.address);
         user.address = null;
       }
 
       // Update the user
-      userRepo.merge(user, userData);
-      await userRepo.save(user);
+      this.userRepo.merge(user, userData);
+      await this.userRepo.save(user);
 
       // Log user update
-      const actionType = await actionTypeRepo.findOneBy({
-        action_type: "update",
-      });
-      const loginUser = await loginUserRepo.findOneBy({
-        login_id: BigInt(loginUserId),
-      });
+      const actionType = await this.actionTypeRepo.findOneByType("update");
+      const loginUser = await this.loginUserRepo.findOneByLoginId(
+        BigInt(loginUserId)
+      );
 
       if (actionType && loginUser) {
-        const userAudit = userAuditRepo.create({
+        const userAudit = this.userAuditRepo.create({
           user_id: user,
           action_type: actionType,
           login_user: loginUser,
         });
 
-        await userAuditRepo.save(userAudit);
+        await this.userAuditRepo.save(userAudit);
       }
 
       return user;
@@ -223,38 +206,27 @@ export class UserService {
   }
 
   async deleteUser(id: bigint, loginUserId: number): Promise<boolean> {
-    const userRepo = this.dataSource.getRepository(Users);
-    const addressRepo = this.dataSource.getRepository(Addresses);
-    const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
-    const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
-    const loginUserRepo = this.dataSource.getRepository(UserLogins);
-
-    const user = await userRepo.findOne({
-      where: { user_id: id, deleted_at: undefined },
-      relations: ["address"],
-    });
+    const user = await this.userRepo.findOneById(id);
 
     if (user) {
       user.deleted_at = new Date();
       user.is_active = false;
-      await userRepo.save(user);
+      await this.userRepo.save(user);
 
       // Log delete user
-      const actionType = await actionTypeRepo.findOneBy({
-        action_type: "delete",
-      });
-      const loginUser = await loginUserRepo.findOneBy({
-        login_id: BigInt(loginUserId),
-      });
+      const actionType = await this.actionTypeRepo.findOneByType("delete");
+      const loginUser = await this.loginUserRepo.findOneByLoginId(
+        BigInt(loginUserId)
+      );
 
       if (actionType && loginUser) {
-        const userAudit = userAuditRepo.create({
+        const userAudit = this.userAuditRepo.create({
           user_id: user,
           action_type: actionType,
           login_user: loginUser,
         });
 
-        await userAuditRepo.save(userAudit);
+        await this.userAuditRepo.save(userAudit);
       }
 
       return true;
@@ -264,18 +236,10 @@ export class UserService {
   }
 
   async getUserById(id: bigint) {
-    const userRepo = this.dataSource.getRepository(Users);
-    return userRepo.findOne({
-      where: { user_id: id, deleted_at: undefined },
-      relations: ["address"],
-    });
+    return this.userRepo.findOneById(id);
   }
 
   async getAllUsers() {
-    const userRepo = this.dataSource.getRepository(Users);
-    return userRepo.find({
-      where: { deleted_at: undefined },
-      relations: ["address"],
-    });
+    return this.userRepo.findAll();
   }
 }

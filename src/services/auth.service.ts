@@ -1,22 +1,22 @@
+// src/services/auth.service.ts
 import { DataSource } from "typeorm";
 import { UserLogins } from "../entities/userLogins.entity";
+import { UserLoginRepository } from "../repositories/user-login.repository";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export class AuthService {
-  private dataSource: DataSource;
+  private userLoginRepo: UserLoginRepository;
   private saltRounds: number = 10;
   private secretKey: string = process.env.JWT_SECRET || "secret_key";
 
   constructor(dataSource: DataSource) {
-    this.dataSource = dataSource;
+    this.userLoginRepo = new UserLoginRepository(dataSource);
   }
 
   async register(username: string, password: string): Promise<UserLogins> {
-    const loginUserRepo = this.dataSource.getRepository(UserLogins);
-
     // Check if the user already exists
-    const existingUser = await loginUserRepo.findOneBy({ username });
+    const existingUser = await this.userLoginRepo.findOneByUsername(username);
     if (existingUser) {
       throw new Error("Username already exists");
     }
@@ -25,19 +25,17 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
     // Create new user
-    const newUser = loginUserRepo.create({
+    const newUser = this.userLoginRepo.create({
       username,
       password: hashedPassword,
       status: true,
     });
 
-    return loginUserRepo.save(newUser);
+    return this.userLoginRepo.save(newUser);
   }
 
   async login(username: string, password: string): Promise<string> {
-    const loginUserRepo = this.dataSource.getRepository(UserLogins);
-
-    const user = await loginUserRepo.findOneBy({ username });
+    const user = await this.userLoginRepo.findOneByUsername(username);
     if (!user) {
       throw new Error("User not found");
     }
