@@ -5,7 +5,7 @@ import userRoutes from "./routes/user.route";
 import { setupSwagger } from "./configs/swagger";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 setupSwagger(app);
 

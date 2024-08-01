@@ -1,9 +1,7 @@
-// src/middlewares/validation.middlewares.ts
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import userSchema from "../dtos/user.dto";
 
-// Middleware para validação de registro de usuário
 export function validateRegisterUser(
   req: Request,
   res: Response,
@@ -38,7 +36,6 @@ export function validateRegisterUser(
   next();
 }
 
-// Middleware para validação de login de usuário
 export function validateLoginUser(
   req: Request,
   res: Response,
@@ -73,7 +70,6 @@ export function validateLoginUser(
   next();
 }
 
-// Middleware para validação de dados de usuário
 export function validateUserData(
   req: Request,
   res: Response,

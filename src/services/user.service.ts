@@ -60,7 +60,7 @@ export class UserService {
         state = stateRepo.create({
           state_name: userData.address.city.state.state_name,
           iso_code: userData.address.city.state.iso_code,
-          country: country, // Associar o país criado ou encontrado
+          country: country,
         });
         await stateRepo.save(state);
       }
@@ -157,7 +157,7 @@ export class UserService {
           state = stateRepo.create({
             state_name: userData.address.city.state.state_name,
             iso_code: userData.address.city.state.iso_code,
-            country: country, // Associar o país criado ou encontrado
+            country: country,
           });
           await stateRepo.save(state);
         }
@@ -229,7 +229,6 @@ export class UserService {
     const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
     const loginUserRepo = this.dataSource.getRepository(UserLogins);
 
-    // Encontre o usuário que deve ser marcado como excluído
     const user = await userRepo.findOne({
       where: { user_id: id, deleted_at: undefined },
       relations: ["address"],
@@ -240,7 +239,7 @@ export class UserService {
       user.is_active = false;
       await userRepo.save(user);
 
-      // Log de auditoria para a exclusão do usuário
+      // Log delete user
       const actionType = await actionTypeRepo.findOneBy({
         action_type: "delete",
       });
