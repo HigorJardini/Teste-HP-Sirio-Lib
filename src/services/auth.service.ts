@@ -1,4 +1,3 @@
-// src/services/auth.service.ts
 import { DataSource } from "typeorm";
 import { UserLogins } from "../entities/userLogins.entity";
 import { UserLoginRepository } from "../repositories/user-login.repository";
