@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000
 @username = admin
 @password = securitypassword123
-@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyNDcwNzk0LCJleHAiOjE3MjI0NzQzOTR9.M4BLQfTVa-VEucyPKvYCOn4G5bgnrovzmNYN2YvuOtI
+@jwt_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyNDg1NTkzLCJleHAiOjE3MjI0ODkxOTN9.5S6DD93O6ROZiQ3DmwHIgntTtcH9u9nNAC6eJoTRyKk
 
 ### Generate JWT Token
 POST {{baseUrl}}/api/auth/login

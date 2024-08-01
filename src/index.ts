@@ -1,8 +1,8 @@
 import express from "express";
-import dataSource from "./config/data-source";
+import dataSource from "./configs/data-source";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
-import { setupSwagger } from "./config/swagger";
+import { setupSwagger } from "./configs/swagger";
 
 const app = express();
 const port = 3000;

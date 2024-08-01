@@ -1,9 +1,12 @@
+// src/dto/user.dto.ts
 import Joi from "joi";
 import { isValidCPF } from "../utils/cpf.utils";
 
+// Regex para códigos postais
 const brazilianPostalCodeRegex = /^\d{5}-\d{3}$/;
 const usPostalCodeRegex = /^\d{5}(?:-\d{4})?$/;
 
+// Schema para validação de usuário
 const userSchema = Joi.object({
   cpf: Joi.string()
     .pattern(/^\d{11}$/)

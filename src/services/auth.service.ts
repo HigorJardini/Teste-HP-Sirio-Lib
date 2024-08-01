@@ -39,7 +39,7 @@ export class AuthService {
 
     const user = await loginUserRepo.findOneBy({ username });
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error("User not found");
     }
 
     // Check password

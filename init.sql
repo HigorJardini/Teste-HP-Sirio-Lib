@@ -42,11 +42,12 @@ CREATE TABLE UserLogins (
 
 CREATE TABLE Users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    cpf VARCHAR(11) UNIQUE NOT NULL,
+    cpf VARCHAR(11) NOT NULL,
     name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
     address_id BIGINT UNIQUE,
     is_active BOOL NOT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (address_id) REFERENCES Addresses(address_id)
 );
 

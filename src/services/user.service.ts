@@ -117,7 +117,7 @@ export class UserService {
     const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
 
     const user = await userRepo.findOne({
-      where: { user_id: id },
+      where: { user_id: id, deleted_at: undefined },
       relations: ["address"],
     });
 
@@ -211,21 +211,22 @@ export class UserService {
     const actionTypeRepo = this.dataSource.getRepository(ActionTypes);
     const userAuditRepo = this.dataSource.getRepository(UserAuditLogs);
 
+    // Encontre o usuário que deve ser marcado como excluído
     const user = await userRepo.findOne({
-      where: { user_id: id },
+      where: { user_id: id, deleted_at: undefined },
       relations: ["address"],
     });
 
     if (user) {
-      if (user.address) {
-        await addressRepo.remove(user.address);
-      }
-      await userRepo.remove(user);
+      user.deleted_at = new Date();
+      user.is_active = false;
+      await userRepo.save(user);
 
-      // Log user deletion
-      // const actionType = await actionTypeRepo.findOneBy({
-      //   action_type: "delete",
+      // Log de auditoria para a exclusão do usuário
+      // const actionType = await actionTypeRepo.findOne({
+      //   where: { action_type: "delete" },
       // });
+
       // if (actionType) {
       //   const userAudit = userAuditRepo.create({
       //     user_id: id,
@@ -244,13 +245,16 @@ export class UserService {
   async getUserById(id: bigint) {
     const userRepo = this.dataSource.getRepository(Users);
     return userRepo.findOne({
-      where: { user_id: id },
+      where: { user_id: id, deleted_at: undefined },
       relations: ["address"],
     });
   }
 
   async getAllUsers() {
     const userRepo = this.dataSource.getRepository(Users);
-    return userRepo.find({ relations: ["address"] });
+    return userRepo.find({
+      where: { deleted_at: undefined },
+      relations: ["address"],
+    });
   }
 }

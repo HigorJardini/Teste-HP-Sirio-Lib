@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from "typeorm";
 import { Addresses } from "./addresses.entity";
 
@@ -30,4 +31,7 @@ export class Users {
   @ManyToOne(() => Addresses, { nullable: true })
   @JoinColumn({ name: "address_id" })
   address!: Addresses | null;
+
+  @DeleteDateColumn({ nullable: true })
+  deleted_at!: Date | null;
 }

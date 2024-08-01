@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { JwtPayload } from "jsonwebtoken";
-import userSchema from "../dto/user.dto";
+import userSchema from "../dtos/user.dto";
 
 /**
  * @swagger
@@ -148,11 +148,6 @@ export class UserController {
    */
   public async createUser(req: Request, res: Response): Promise<Response> {
     try {
-      const { error } = userSchema.validate(req.body);
-      if (error) {
-        return res.status(400).json({ message: error.details[0].message });
-      }
-
       const userData = req.body;
       const loginUserId = (req.user as JwtPayload)?.id;
 
@@ -165,9 +160,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "User with this CPF already exists") {
-          return res
-            .status(400)
-            .json({ status: "error", message: error.message });
+          return res.status(400).json({ message: error.message });
         }
         console.error("Unexpected error:", error);
         return res.status(500).json({ message: "Internal server error" });
@@ -321,13 +314,6 @@ export class UserController {
 
       if (!loginUserId) {
         return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      const { error } = userSchema.validate(userData);
-      if (error) {
-        return res.status(400).json({
-          message: error.details.map((detail) => detail.message).join(", "),
-        });
       }
 
       const updatedUser = await this.userService.updateUser(
