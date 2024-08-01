@@ -89,18 +89,39 @@ To install the project, follow these steps:
     DB_NAME=your_database_name
     JWT_SECRET=your_secret_key
    ```
-3. Install the project dependencies:
-   ```bash
-    npm install
-   ```
-4. Build the project:
-   ```bash
-    npm run build
-   ```
-5. Start the services using Docker Compose:
+3. Start the services using Docker Compose
    ```bash
     docker-compose up -d --build
    ```
+
+### Additional Installation and Maintenance Options
+
+To perform optional cleanup and avoid potential conflicts, you can run the following scripts:
+
+- **Linux**:
+  1.  **Clean up local directories and Docker cache**:
+      - Run the following script to remove `node_modules` and `dist` directories and optionally clean Docker cache:
+      ```bash
+      chmod +x ./docker/docker-run.sh && ./docker/docker-run.sh
+      ```
+      The script performs the following steps:
+      - Removes `node_modules` and `dist` directories if they exist.
+      - Prompts for confirmation to clean Docker cache using docker `system prune -f`.
+      - Provides options for cleaning Docker images and volumes if needed.
+      - ![Docker Clear Option](./public/Docker-Clear-Option.PNG)
+- **Windows**:
+  You can use the provided `.bat` and `.ps1` scripts to clean and rebuild your Docker environment:
+  1.  **Run the clean and build batch script**:
+      ```batch
+      .\docker\docker-run.bat
+      ```
+  2.  **Or, run the PowerShell script**:
+      ```powershell
+      .\docker\docker-run.ps1
+      ```
+  - These scripts will:
+    - Remove local `node_modules` and `dist` directories if they exist.
+    - Optionally, clean Docker caches and remove volumes.
 
 ## Usage
 
@@ -235,18 +256,39 @@ Para instalar o projeto, siga estas etapas:
     DB_NAME=your_database_name
     JWT_SECRET=your_secret_key
    ```
-3. Instale as dependências do projeto:
+3. Inicie os serviços usando o Docker Compose:
    ```bash
-    npm install
+     docker-compose up -d --build
    ```
-4. Construa o projeto:
-   ```bash
-    npm run build
-   ```
-5. Inicie os serviços usando o Docker Compose:
-   ```bash
-    docker-compose up -d --build
-   ```
+
+### Opções Adicionais de Instalação e Manutenção
+
+Para realizar limpeza opcional e evitar possíveis conflitos, você pode executar os seguintes scripts:
+
+- **Linux**:
+  1.  **Limpar diretórios locais e cache do Docker**:
+      - Execute o seguinte script para remover os diretórios `node_modules` e `dist` e, opcionalmente, limpar o cache do Docker::
+      ```bash
+      chmod +x ./docker/docker-run.sh && ./docker/docker-run.sh
+      ```
+      O script realiza as seguintes etapas:
+      - Remove os diretórios `node_modules` e `dist`, se existirem.
+      - Solicita confirmação para limpar o cache do Docker usando `docker system prune -f`.
+      - Oferece opções para limpar imagens e volumes do Docker, se necessário.
+      - ![Opção de limpeza do Docker](./public/Docker-Clear-Option.PNG)
+- **Windows**:
+  Você pode usar os scripts `.bat` e `.ps1` fornecidos para limpar e reconstruir seu ambiente Docker:
+  1.  **Execute o script de limpeza e construção em batch**:
+      ```batch
+      .\docker\docker-run.bat
+      ```
+  2.  **Ou, execute o script PowerShell**:
+      ```powershell
+      .\docker\docker-run.ps1
+      ```
+  - Esses scripts irão:
+    - Remover os diretórios locais `node_modules` e `dist`, se existirem.
+    - Opcionalmente, limpar caches do Docker e remover volumes.
 
 ## Uso
 
