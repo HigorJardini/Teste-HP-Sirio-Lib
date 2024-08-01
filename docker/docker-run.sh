@@ -46,6 +46,14 @@ else
   echo -e "\033[1;32mSkipping Docker volumes cleanup.\033[0m"
 fi
 
+# Prompt for Docker images cleanup
+if prompt_for_clean "Do you want to clean Docker images?"; then
+  echo -e "\033[1;32mCleaning Docker images...\033[0m"
+  docker image prune -f
+else
+  echo -e "\033[1;32mSkipping Docker images cleanup.\033[0m"
+fi
+
 # Rebuild the Docker image
 echo -e "\033[1;32mBuilding Docker image...\033[0m"
 docker-compose build

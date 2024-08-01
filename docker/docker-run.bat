@@ -15,6 +15,14 @@ if /i "%response%"=="y" (
   set clean_volumes=false
 )
 
+:: Function to prompt for images cleanup
+set /p response="Do you want to clean Docker images? (y/n): "
+if /i "%response%"=="y" (
+  set clean_images=true
+) else (
+  set clean_images=false
+)
+
 :: Stop and remove existing Docker containers if running
 echo Stopping and removing existing Docker containers...
 docker-compose down
@@ -48,6 +56,14 @@ if "%clean_volumes%"=="true" (
   docker volume prune -f
 ) else (
   echo Skipping Docker volumes cleanup.
+)
+
+:: Clean Docker images if prompted
+if "%clean_images%"=="true" (
+  echo Cleaning Docker images...
+  docker image prune -f
+) else (
+  echo Skipping Docker images cleanup.
 )
 
 :: Rebuild and start Docker containers

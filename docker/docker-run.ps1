@@ -20,6 +20,9 @@ $cleanCache = Prompt-ForCleanup "Do you want to clean the Docker cache? (y/n)"
 # Prompt for Docker volumes cleanup
 $cleanVolumes = Prompt-ForCleanup "Do you want to clean Docker volumes? (y/n)"
 
+# Prompt for Docker images cleanup
+$cleanImages = Prompt-ForCleanup "Do you want to clean Docker images? (y/n)"
+
 # Stop and remove existing Docker containers if running
 Write-Host "Stopping and removing existing Docker containers..."
 docker-compose down
@@ -53,6 +56,14 @@ if ($cleanVolumes) {
     docker volume prune -f
 } else {
     Write-Host "Skipping Docker volumes cleanup."
+}
+
+# Clean Docker images if prompted
+if ($cleanImages) {
+    Write-Host "Cleaning Docker images..."
+    docker image prune -f
+} else {
+    Write-Host "Skipping Docker images cleanup."
 }
 
 # Rebuild and start Docker containers
